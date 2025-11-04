@@ -1,0 +1,538 @@
+{
+  "version": "1.0.0",
+  "icon_pack": "lucide-react",
+  "locale_support": ["en", "de"],
+  "categories": [
+    {
+      "id": "GROC",
+      "code": "GROC",
+      "name_en": "Grocery & Food",
+      "name_de": "Lebensmittel",
+      "icon": "ShoppingCart",
+      "synonyms": ["market", "supermarket", "grocery", "lebensmittel", "frischware", "lebensm.", "food"],
+      "children": [
+        {
+          "id": "GROC.PRODUCE",
+          "name_en": "Produce",
+          "name_de": "Obst & Gemüse",
+          "icon": "Apple",
+          "keywords": ["apples", "bananas", "tomatoes", "salad", "lettuce", "kartoffeln", "obst", "gemüse", "kräuter", "pilze", "bio"]
+        },
+        {
+          "id": "GROC.MEAT",
+          "name_en": "Meat & Poultry",
+          "name_de": "Fleisch & Geflügel",
+          "icon": "Drumstick",
+          "keywords": ["beef", "pork", "chicken", "turkey", "hackfleisch", "wurst", "aufschnitt", "deli"]
+        },
+        {
+          "id": "GROC.SEAFOOD",
+          "name_en": "Seafood",
+          "name_de": "Fisch & Meeresfrüchte",
+          "icon": "Fish",
+          "keywords": ["salmon", "tuna", "shrimp", "fisch", "krabben", "lachs"]
+        },
+        {
+          "id": "GROC.DAIRY",
+          "name_en": "Dairy & Eggs",
+          "name_de": "Molkerei & Eier",
+          "icon": "Egg",
+          "keywords": ["milk", "cheese", "butter", "joghurt", "sahne", "eier"]
+        },
+        {
+          "id": "GROC.BAKERY",
+          "name_en": "Bakery",
+          "name_de": "Bäckerei",
+          "icon": "Bread",
+          "keywords": ["bread", "rolls", "brötchen", "croissant", "kuchen", "torte", "tortilla"]
+        },
+        {
+          "id": "GROC.PANTRY",
+          "name_en": "Pantry & Staples",
+          "name_de": "Vorrat",
+          "icon": "Box",
+          "keywords": ["rice", "pasta", "flour", "mehl", "zucker", "öl", "essig", "konserven", "sauce"]
+        },
+        {
+          "id": "GROC.BREAKFAST",
+          "name_en": "Breakfast",
+          "name_de": "Frühstück",
+          "icon": "Croissant",
+          "keywords": ["cereal", "oats", "müsli", "jam", "honig", "spreads", "peanut butter"]
+        },
+        {
+          "id": "GROC.SNACKS",
+          "name_en": "Snacks",
+          "name_de": "Snacks",
+          "icon": "Pretzel",
+          "keywords": ["chips", "nuts", "popcorn", "cracker", "jerky", "salzstangen"]
+        },
+        {
+          "id": "GROC.SWEETS",
+          "name_en": "Confectionery",
+          "name_de": "Süßwaren",
+          "icon": "Candy",
+          "keywords": ["chocolate", "candy", "bonbons", "gummy", "gum", "mints"]
+        },
+        {
+          "id": "GROC.FROZEN",
+          "name_en": "Frozen Foods",
+          "name_de": "Tiefkühl",
+          "icon": "Snowflake",
+          "keywords": ["frozen", "eis", "tiefkühlgemüse", "pizza", "ice cream"]
+        },
+        {
+          "id": "GROC.DELI",
+          "name_en": "Ready-to-Eat & Deli",
+          "name_de": "Feinkost & Fertig",
+          "icon": "Utensils",
+          "keywords": ["salad bar", "hot bar", "sandwich", "feinkost", "fertiggericht"]
+        },
+        {
+          "id": "GROC.BEVERAGES_NA",
+          "name_en": "Beverages (Non-Alcoholic)",
+          "name_de": "Getränke (alkoholfrei)",
+          "icon": "GlassWater",
+          "keywords": ["water", "soda", "juice", "energy", "tea", "coffee", "mineralwasser", "saft", "limonade"]
+        },
+        {
+          "id": "GROC.SPECIALTY",
+          "name_en": "International & Specialty",
+          "name_de": "International & Spezialitäten",
+          "icon": "Globe",
+          "keywords": ["asian", "mexican", "italian", "halal", "kosher", "vegan", "gluten-free"]
+        },
+        {
+          "id": "GROC.BABYFOOD",
+          "name_en": "Baby Food",
+          "name_de": "Babynahrung",
+          "icon": "Baby",
+          "keywords": ["formula", "brei", "pouches", "milchpulver"]
+        },
+        {
+          "id": "GROC.PETFOOD",
+          "name_en": "Pet Food & Treats",
+          "name_de": "Tiernahrung",
+          "icon": "Bone",
+          "keywords": ["cat food", "dog food", "leckerli", "tierfutter"]
+        }
+      ]
+    },
+    {
+      "id": "ALCO",
+      "code": "ALCO",
+      "name_en": "Alcoholic Beverages",
+      "name_de": "Alkoholische Getränke",
+      "icon": "Wine",
+      "synonyms": ["beer", "wine", "spirits", "alkohol", "schnaps", "wein", "bier"],
+      "children": [
+        { "id": "ALCO.BEER", "name_en": "Beer", "name_de": "Bier", "icon": "Beer", "keywords": ["bier", "pils", "lager", "ipa", "radler"] },
+        { "id": "ALCO.WINE", "name_en": "Wine", "name_de": "Wein", "icon": "Wine", "keywords": ["rotwein", "weißwein", "rosé", "sparkling", "sekt"] },
+        { "id": "ALCO.SPIRITS", "name_en": "Spirits", "name_de": "Spirituosen", "icon": "GlassCocktail", "keywords": ["vodka", "whisky", "rum", "gin", "schnaps", "likör"] }
+      ]
+    },
+    {
+      "id": "TOBA",
+      "code": "TOBA",
+      "name_en": "Tobacco & Smoking",
+      "name_de": "Tabakwaren",
+      "icon": "Cigarette",
+      "synonyms": ["cigarettes", "tabak", "zigaretten", "cigar", "rolling papers", "vape"],
+      "children": []
+    },
+    {
+      "id": "DRUG",
+      "code": "DRUG",
+      "name_en": "Drugstore & Personal Care",
+      "name_de": "Drogerie & Körperpflege",
+      "icon": "Bath",
+      "synonyms": ["dm", "rossmann", "drogerie", "personal care", "hygiene"],
+      "children": [
+        { "id": "DRUG.ORAL", "name_en": "Oral Care", "name_de": "Mundpflege", "icon": "Tooth", "keywords": ["toothpaste", "zahnbürste", "floss", "mundspülung"] },
+        { "id": "DRUG.HAIR", "name_en": "Hair Care", "name_de": "Haarpflege", "icon": "Comb", "keywords": ["shampoo", "conditioner", "haargel", "haarfarbe"] },
+        { "id": "DRUG.BODY", "name_en": "Bath & Body", "name_de": "Körperpflege", "icon": "Soap", "keywords": ["duschgel", "seife", "lotion", "deo", "rasierer"] },
+        { "id": "DRUG.FEMCARE", "name_en": "Feminine Care", "name_de": "Damenhygiene", "icon": "Droplets", "keywords": ["tampons", "binden", "menstruation", "cup"] },
+        { "id": "DRUG.COSMETICS", "name_en": "Cosmetics", "name_de": "Kosmetik", "icon": "Sparkles", "keywords": ["makeup", "nagellack", "remover"] },
+        { "id": "DRUG.BABYCARE", "name_en": "Baby Care", "name_de": "Babybedarf", "icon": "Baby", "keywords": ["diapers", "windeln", "wipes", "pflegecreme"] },
+        { "id": "DRUG.SUN", "name_en": "Sun Care", "name_de": "Sonnenschutz", "icon": "Sun", "keywords": ["sunscreen", "sonnencreme", "aftersun"] }
+      ]
+    },
+    {
+      "id": "PHAR",
+      "code": "PHAR",
+      "name_en": "Health & Pharmacy (OTC)",
+      "name_de": "Gesundheit & Apotheke (Frei verkäuflich)",
+      "icon": "Pill",
+      "synonyms": ["apotheke", "pharmacy", "gesundheit", "otc"],
+      "children": [
+        { "id": "PHAR.OTC", "name_en": "OTC Medicines", "name_de": "Arzneimittel (OTC)", "icon": "Capsule", "keywords": ["pain", "ibuprofen", "paracetamol", "husten", "allergie"] },
+        { "id": "PHAR.VITAMINS", "name_en": "Vitamins & Supplements", "name_de": "Vitamine & Supplemente", "icon": "Plus", "keywords": ["vitamin c", "magnesium", "zink", "omega-3"] },
+        { "id": "PHAR.FIRSTAID", "name_en": "First Aid & Care", "name_de": "Erste Hilfe & Pflege", "icon": "FirstAidKit", "keywords": ["pflaster", "bandage", "desinfektion", "thermometer", "tests"] }
+      ]
+    },
+    {
+      "id": "HOME",
+      "code": "HOME",
+      "name_en": "Household Supplies",
+      "name_de": "Haushalt",
+      "icon": "SprayCan",
+      "synonyms": ["reiniger", "haushaltswaren", "paper goods", "laundry"],
+      "children": [
+        { "id": "HOME.CLEANERS", "name_en": "Cleaning", "name_de": "Reiniger", "icon": "Broom", "keywords": ["allzweck", "badreiniger", "küche", "boden"] },
+        { "id": "HOME.LAUNDRY", "name_en": "Laundry", "name_de": "Wäsche", "icon": "WashingMachine", "keywords": ["waschmittel", "weichspüler", "fleckenentferner"] },
+        { "id": "HOME.PAPER", "name_en": "Paper Goods", "name_de": "Papierwaren", "icon": "ScrollText", "keywords": ["toilettenpapier", "küchenrolle", "taschentücher", "servietten"] },
+        { "id": "HOME.TRASH", "name_en": "Trash & Storage", "name_de": "Müll & Aufbewahrung", "icon": "Trash2", "keywords": ["müllbeutel", "folie", "behälter"] },
+        { "id": "HOME.DISH", "name_en": "Dishwashing", "name_de": "Geschirrspülen", "icon": "CupSoda", "keywords": ["spülmittel", "tabs", "klarspüler"] },
+        { "id": "HOME.AIRPEST", "name_en": "Air & Pest Control", "name_de": "Luft & Schädlingsbekämpfung", "icon": "Wind", "keywords": ["lufterfrischer", "insekten", "motten"] }
+      ]
+    },
+    {
+      "id": "PETS",
+      "code": "PETS",
+      "name_en": "Pet Supplies",
+      "name_de": "Tierbedarf",
+      "icon": "Dog",
+      "synonyms": ["tierbedarf", "katze", "hund", "aquarium"],
+      "children": [
+        { "id": "PETS.FOOD", "name_en": "Food & Treats", "name_de": "Futter & Leckerlis", "icon": "Bone", "keywords": ["trockenfutter", "nassfutter", "leckerli"] },
+        { "id": "PETS.CARE", "name_en": "Care & Hygiene", "name_de": "Pflege & Hygiene", "icon": "Bath", "keywords": ["streu", "shampoo", "bürste"] },
+        { "id": "PETS.GEAR", "name_en": "Toys & Accessories", "name_de": "Spielzeug & Zubehör", "icon": "ToyBrick", "keywords": ["spielzeug", "leine", "napf"] }
+      ]
+    },
+    {
+      "id": "DIYH",
+      "code": "DIYH",
+      "name_en": "DIY & Hardware",
+      "name_de": "Baumarkt",
+      "icon": "Hammer",
+      "synonyms": ["bauhaus", "hornbach", "obi", "werkzeug", "baustoffe"],
+      "children": [
+        { "id": "DIYH.LUMBER", "name_en": "Lumber & Wood", "name_de": "Holz", "icon": "Trees", "keywords": ["holz", "leisten", "platten"] },
+        { "id": "DIYH.BUILD", "name_en": "Building Materials", "name_de": "Baustoffe", "icon": "Bricks", "keywords": ["zement", "gipskarton", "dämmung"] },
+        { "id": "DIYH.PAINT", "name_en": "Paint & Supplies", "name_de": "Farbe & Zubehör", "icon": "PaintBucket", "keywords": ["farbe", "lack", "pinsel", "rolle", "abklebeband"] },
+        { "id": "DIYH.TOOLS", "name_en": "Tools", "name_de": "Werkzeuge", "icon": "Wrench", "keywords": ["bohrer", "säge", "bits", "akkuschrauber"] },
+        { "id": "DIYH.ELECTRICAL", "name_en": "Electrical", "name_de": "Elektro", "icon": "Lightbulb", "keywords": ["kabel", "steckdose", "schalter", "glühbirne"] },
+        { "id": "DIYH.PLUMBING", "name_en": "Plumbing", "name_de": "Sanitär", "icon": "Pipe", "keywords": ["rohr", "siphon", "dichtung", "armatur", "silikon"] },
+        { "id": "DIYH.GARDEN", "name_en": "Garden & Outdoor", "name_de": "Garten & Outdoor", "icon": "Sprout", "keywords": ["erde", "dünger", "saatgut", "schlauch", "grill"] },
+        { "id": "DIYH.SAFETY", "name_en": "Safety & PPE", "name_de": "Sicherheit & PSA", "icon": "Shield", "keywords": ["handschuhe", "schutzbrille", "rauchmelder", "co-melder"] }
+      ]
+    },
+    {
+      "id": "FURN",
+      "code": "FURN",
+      "name_en": "Furniture & Home Living",
+      "name_de": "Möbel & Wohnen",
+      "icon": "Armchair",
+      "synonyms": ["ikea", "möbel", "wohnaccessoires", "deko"],
+      "children": [
+        { "id": "FURN.FURNITURE", "name_en": "Furniture", "name_de": "Möbel", "icon": "Armchair", "keywords": ["sofa", "tisch", "stuhl", "bett", "schrank"] },
+        { "id": "FURN.TEXTILES", "name_en": "Home Textiles", "name_de": "Heimtextilien", "icon": "Blanket", "keywords": ["bettwäsche", "handtuch", "vorhang", "teppich"] },
+        { "id": "FURN.DECOR", "name_en": "Décor", "name_de": "Deko", "icon": "Sparkles", "keywords": ["kerze", "vase", "rahmen", "spiegel"] },
+        { "id": "FURN.KITCHENWARE", "name_en": "Kitchenware", "name_de": "Küchenwaren", "icon": "UtensilsCrossed", "keywords": ["topf", "pfanne", "messer", "schneidebrett"] },
+        { "id": "FURN.LIGHTING", "name_en": "Lighting", "name_de": "Beleuchtung", "icon": "Lamp", "keywords": ["lampe", "schirm", "leuchte"] },
+        { "id": "FURN.STORAGE", "name_en": "Storage & Organization", "name_de": "Aufbewahrung & Ordnung", "icon": "Boxes", "keywords": ["kiste", "box", "regal", "einsatz"] }
+      ]
+    },
+    {
+      "id": "ELEC",
+      "code": "ELEC",
+      "name_en": "Consumer Electronics",
+      "name_de": "Elektronik",
+      "icon": "Monitor",
+      "synonyms": ["electronics", "media markt", "saturn", "handy", "zubehör"],
+      "children": [
+        { "id": "ELEC.MOBILE", "name_en": "Phones & Accessories", "name_de": "Handys & Zubehör", "icon": "Smartphone", "keywords": ["handy", "case", "ladekabel", "powerbank"] },
+        { "id": "ELEC.AUDIO", "name_en": "Audio & Headphones", "name_de": "Audio & Kopfhörer", "icon": "Headphones", "keywords": ["kopfhörer", "lautsprecher", "bluetooth"] },
+        { "id": "ELEC.COMPUTER", "name_en": "Computers & Peripherals", "name_de": "Computer & Zubehör", "icon": "Cpu", "keywords": ["tastatur", "maus", "monitor", "ssd", "usb-stick"] },
+        { "id": "ELEC.SMALL_APPL", "name_en": "Small Appliances", "name_de": "Kleingeräte", "icon": "Plug", "keywords": ["wasserkocher", "toaster", "staubsauger", "mixer"] },
+        { "id": "ELEC.CABLES", "name_en": "Cables & Power", "name_de": "Kabel & Strom", "icon": "Cable", "keywords": ["hdmi", "kabel", "adapter", "steckdosenleiste", "batterien"] }
+      ]
+    },
+    {
+      "id": "APPL",
+      "code": "APPL",
+      "name_en": "Large Appliances",
+      "name_de": "Großgeräte",
+      "icon": "Warehouse",
+      "synonyms": ["waschmaschine", "kühlschrank", "herd", "geschirrspüler"],
+      "children": []
+    },
+    {
+      "id": "OFFI",
+      "code": "OFFI",
+      "name_en": "Office & Stationery",
+      "name_de": "Büro & Schreibwaren",
+      "icon": "FileText",
+      "synonyms": ["papier", "stifte", "drucker", "tinte"],
+      "children": [
+        { "id": "OFFI.PAPER", "name_en": "Paper & Notebooks", "name_de": "Papier & Hefte", "icon": "BookOpenText", "keywords": ["kopierpapier", "notizbuch", "heft"] },
+        { "id": "OFFI.WRITING", "name_en": "Writing Instruments", "name_de": "Schreibgeräte", "icon": "PenTool", "keywords": ["kugelschreiber", "marker", "bleistift"] },
+        { "id": "OFFI.PRINT", "name_en": "Printing & Ink", "name_de": "Druck & Tinte", "icon": "Printer", "keywords": ["patrone", "toner", "druckerpapier"] },
+        { "id": "OFFI.MAIL", "name_en": "Mailing & Shipping", "name_de": "Versand & Briefe", "icon": "Mail", "keywords": ["umschlag", "etiketten", "paketband"] }
+      ]
+    },
+    {
+      "id": "BOOK",
+      "code": "BOOK",
+      "name_en": "Books & Media",
+      "name_de": "Bücher & Medien",
+      "icon": "BookOpen",
+      "synonyms": ["buch", "magazin", "zeitung", "media"],
+      "children": []
+    },
+    {
+      "id": "TOYS",
+      "code": "TOYS",
+      "name_en": "Toys, Crafts & Hobbies",
+      "name_de": "Spielwaren & Basteln",
+      "icon": "Puzzle",
+      "synonyms": ["spielzeug", "basteln", "hobby"],
+      "children": [
+        { "id": "TOYS.TOYS", "name_en": "Toys & Games", "name_de": "Spielzeug & Spiele", "icon": "Gamepad2", "keywords": ["puzzle", "board game", "figur"] },
+        { "id": "TOYS.CRAFTS", "name_en": "Arts & Crafts", "name_de": "Kunst & Basteln", "icon": "Palette", "keywords": ["bastelset", "wolle", "nähset"] },
+        { "id": "TOYS.PARTY", "name_en": "Party & Seasonal", "name_de": "Party & Saison", "icon": "PartyPopper", "keywords": ["deko", "ballons", "kostüm"] }
+      ]
+    },
+    {
+      "id": "CLTH",
+      "code": "CLTH",
+      "name_en": "Apparel & Accessories",
+      "name_de": "Bekleidung & Accessoires",
+      "icon": "Shirt",
+      "synonyms": ["h&m", "c&a", "bekleidung", "kleidung", "mode"],
+      "children": [
+        { "id": "CLTH.MEN", "name_en": "Men", "name_de": "Herren", "icon": "Shirt", "keywords": ["hemd", "hose", "t-shirt", "jacke"] },
+        { "id": "CLTH.WOMEN", "name_en": "Women", "name_de": "Damen", "icon": "Shirt", "keywords": ["kleid", "bluse", "rock", "leggings"] },
+        { "id": "CLTH.KIDS", "name_en": "Kids", "name_de": "Kinder", "icon": "Baby", "keywords": ["baby", "kinder", "strampler"] },
+        { "id": "CLTH.SHOES", "name_en": "Shoes", "name_de": "Schuhe", "icon": "Footprints", "keywords": ["sneaker", "stiefel", "sandalen"] },
+        { "id": "CLTH.ACCESS", "name_en": "Accessories", "name_de": "Accessoires", "icon": "ShoppingBag", "keywords": ["gürtel", "mütze", "schal", "tasche"] }
+      ]
+    },
+    {
+      "id": "SPOR",
+      "code": "SPOR",
+      "name_en": "Sports & Outdoors",
+      "name_de": "Sport & Outdoor",
+      "icon": "Dumbbell",
+      "synonyms": ["sport", "fitness", "outdoor"],
+      "children": [
+        { "id": "SPOR.FIT", "name_en": "Fitness Gear", "name_de": "Fitness", "icon": "Dumbbell", "keywords": ["yogamatte", "hantel", "band"] },
+        { "id": "SPOR.CAMP", "name_en": "Camping & Hike", "name_de": "Camping & Wandern", "icon": "Tent", "keywords": ["zelt", "schlafsack", "kocher"] },
+        { "id": "SPOR.BIKE", "name_en": "Bike & Ride (non-motorized)", "name_de": "Fahrrad & Roller (ohne Motor)", "icon": "Bike", "keywords": ["fahrradlicht", "pumpe", "klingel"] }
+      ]
+    },
+    {
+      "id": "AUTO",
+      "code": "AUTO",
+      "name_en": "Auto & Mobility",
+      "name_de": "Auto & Mobilität",
+      "icon": "Car",
+      "synonyms": ["auto", "kfz", "car care", "roller", "e-scooter"],
+      "children": [
+        { "id": "AUTO.CARE", "name_en": "Car Care", "name_de": "Autopflege", "icon": "Soap", "keywords": ["autoshampoo", "tücher", "pflegeset"] },
+        { "id": "AUTO.ACCESS", "name_en": "Accessories", "name_de": "Zubehör", "icon": "SteeringWheel", "keywords": ["halterung", "ladekabel", "scheibenwischer"] },
+        { "id": "AUTO.FLUIDS", "name_en": "Fluids & Bulbs", "name_de": "Flüssigkeiten & Lampen", "icon": "Fuel", "keywords": ["öl", "frostschutz", "lampen"] }
+      ]
+    },
+    {
+      "id": "GARD",
+      "code": "GARD",
+      "name_en": "Garden, Plants & Flowers",
+      "name_de": "Garten, Pflanzen & Blumen",
+      "icon": "Flower2",
+      "synonyms": ["pflanzen", "garten", "blumen"],
+      "children": [
+        { "id": "GARD.PLANTS", "name_en": "Plants & Seeds", "name_de": "Pflanzen & Saatgut", "icon": "Sprout", "keywords": ["topfpflanze", "saat", "zwiebeln"] },
+        { "id": "GARD.SOIL", "name_en": "Soil & Fertilizer", "name_de": "Erde & Dünger", "icon": "Vial", "keywords": ["erde", "substrat", "dünger"] },
+        { "id": "GARD.TOOLS", "name_en": "Garden Tools", "name_de": "Gartengeräte", "icon": "Shovel", "keywords": ["gießkanne", "schere", "spaten"] }
+      ]
+    },
+    {
+      "id": "REST",
+      "code": "REST",
+      "name_en": "Restaurant & Foodservice",
+      "name_de": "Gastronomie",
+      "icon": "Utensils",
+      "synonyms": ["restaurant", "imbiss", "cafe", "delivery", "takeaway"],
+      "children": [
+        { "id": "REST.FOOD", "name_en": "Food (Mains/Sides/Desserts)", "name_de": "Essen (Haupt/Beilage/Dessert)", "icon": "Utensils", "keywords": ["burger", "pizza", "salat", "beilage", "dessert"] },
+        { "id": "REST.NA_DRINKS", "name_en": "Drinks (Non-Alcoholic)", "name_de": "Getränke (alkoholfrei)", "icon": "CupSoda", "keywords": ["cola", "wasser", "saft", "kaffee", "tee"] },
+        { "id": "REST.ALCO", "name_en": "Alcoholic Drinks", "name_de": "Alkoholische Getränke", "icon": "Wine", "keywords": ["bier", "wein", "cocktail"] },
+        { "id": "REST.FEES", "name_en": "Service/Delivery/Packaging", "name_de": "Service/Lieferung/Verpackung", "icon": "Truck", "keywords": ["lieferung", "servicepauschale", "verpackung"] }
+      ]
+    },
+    {
+      "id": "SERV",
+      "code": "SERV",
+      "name_en": "In-Store Services",
+      "name_de": "Dienstleistungen im Markt",
+      "icon": "Wrench",
+      "synonyms": ["schlüssel", "foto", "reparatur", "schärfen", "montage"],
+      "children": [
+        { "id": "SERV.KEYS", "name_en": "Key Cutting", "name_de": "Schlüsseldienst", "icon": "KeySquare", "keywords": ["schlüssel", "kopie"] },
+        { "id": "SERV.PHOTO", "name_en": "Photo/Print", "name_de": "Foto/Druck", "icon": "Camera", "keywords": ["passfoto", "fotoabzug"] },
+        { "id": "SERV.REPAIR", "name_en": "Repair & Assembly", "name_de": "Reparatur & Montage", "icon": "Wrench", "keywords": ["montage", "reparatur", "service"] }
+      ]
+    },
+    {
+      "id": "TCOM",
+      "code": "TCOM",
+      "name_en": "Telco & Digital",
+      "name_de": "Telekom & Digital",
+      "icon": "SimCard",
+      "synonyms": ["prepaid", "aufladung", "guthaben", "sim"],
+      "children": [
+        { "id": "TCOM.TOPUP", "name_en": "Top-ups & Vouchers", "name_de": "Aufladungen & Gutscheine", "icon": "CreditCard", "keywords": ["aufladen", "prepaid", "voucher", "code"] },
+        { "id": "TCOM.SIM", "name_en": "SIM & Packs", "name_de": "SIM & Pakete", "icon": "SimCard", "keywords": ["sim", "starter", "datenpaket"] }
+      ]
+    },
+    {
+      "id": "GIFT",
+      "code": "GIFT",
+      "name_en": "Gift Cards & Stored Value",
+      "name_de": "Gutscheine & Guthaben",
+      "icon": "Gift",
+      "synonyms": ["gutschein", "gift card", "guthabenkarte"],
+      "children": []
+    },
+    {
+      "id": "POST",
+      "code": "POST",
+      "name_en": "Postage, Lottery & Tickets",
+      "name_de": "Porto, Lotto & Tickets",
+      "icon": "Stamp",
+      "synonyms": ["porto", "briefmarke", "lotto", "ticket", "fahrkarte"],
+      "children": []
+    },
+    {
+      "id": "BOOK_MEDIA",
+      "code": "BOOK_MEDIA",
+      "name_en": "Entertainment & Media",
+      "name_de": "Unterhaltung & Medien",
+      "icon": "Clapperboard",
+      "synonyms": ["film", "musik", "dvd", "blu-ray", "game"],
+      "children": []
+    },
+    {
+      "id": "MISC",
+      "code": "MISC",
+      "name_en": "Miscellaneous",
+      "name_de": "Sonstiges",
+      "icon": "CircleHelp",
+      "synonyms": ["diverses", "unbekannt", "misc", "various"],
+      "children": []
+    }
+  ],
+  "non_merch_line_items": [
+    {
+      "id": "TAX",
+      "name_en": "Tax",
+      "name_de": "MwSt./USt.",
+      "icon": "Receipt",
+      "types": [
+        { "id": "TAX.VAT_19", "name_en": "VAT 19%", "name_de": "MwSt. 19%" },
+        { "id": "TAX.VAT_7", "name_en": "VAT 7%", "name_de": "MwSt. 7%" },
+        { "id": "TAX.SALES", "name_en": "Sales Tax (US)", "name_de": "Umsatzsteuer (US)" }
+      ]
+    },
+    {
+      "id": "DEPO",
+      "name_en": "Deposit (Bottle/Can)",
+      "name_de": "Pfand",
+      "icon": "Recycle",
+      "types": [
+        { "id": "DEPO.BOTTLE", "name_en": "Bottle Deposit", "name_de": "Flaschenpfand" },
+        { "id": "DEPO.CAN", "name_en": "Can Deposit", "name_de": "Dosenpfand" }
+      ]
+    },
+    {
+      "id": "DEPO_RET",
+      "name_en": "Deposit Return",
+      "name_de": "Pfandrückgabe",
+      "icon": "CircleArrowLeft"
+    },
+    {
+      "id": "DISC",
+      "name_en": "Discount / Promotion",
+      "name_de": "Rabatt / Aktion",
+      "icon": "BadgePercent",
+      "types": [
+        { "id": "DISC.COUPON", "name_en": "Coupon", "name_de": "Coupon" },
+        { "id": "DISC.LOYALTY", "name_en": "Loyalty", "name_de": "Kundenkarte" },
+        { "id": "DISC.BOGO", "name_en": "BOGO/Combo Adj.", "name_de": "Kombi-Rabatt" }
+      ]
+    },
+    {
+      "id": "FEES",
+      "name_en": "Fees & Surcharges",
+      "name_de": "Gebühren & Zuschläge",
+      "icon": "ReceiptPercent",
+      "types": [
+        { "id": "FEES.WEEE", "name_en": "E-waste/WEEE", "name_de": "ElektroG-Abgabe" },
+        { "id": "FEES.BATTERY", "name_en": "Battery Recycling", "name_de": "Batterieentsorgung" },
+        { "id": "FEES.BAG", "name_en": "Bag Fee", "name_de": "Tütengebühr" },
+        { "id": "FEES.SERVICE", "name_en": "Service/Delivery", "name_de": "Service/Lieferung" }
+      ]
+    },
+    {
+      "id": "SHIP",
+      "name_en": "Shipping / Delivery",
+      "name_de": "Versand / Lieferung",
+      "icon": "Truck"
+    },
+    {
+      "id": "TIP",
+      "name_en": "Tip / Gratuity",
+      "name_de": "Trinkgeld",
+      "icon": "Coins"
+    },
+    {
+      "id": "ROUND",
+      "name_en": "Rounding Adjustment",
+      "name_de": "Rundungsdifferenz",
+      "icon": "Sigma"
+    },
+    {
+      "id": "REFUND",
+      "name_en": "Return / Refund",
+      "name_de": "Retoure / Erstattung",
+      "icon": "RotateCcw"
+    },
+    {
+      "id": "CASHBK",
+      "name_en": "Cashback at Register",
+      "name_de": "Barauszahlung",
+      "icon": "Banknote"
+    },
+    {
+      "id": "DONAT",
+      "name_en": "Donation at Checkout",
+      "name_de": "Spende an der Kasse",
+      "icon": "HeartHandshake"
+    },
+    {
+      "id": "PAYMT",
+      "name_en": "Payment / Tender Line",
+      "name_de": "Zahlung / Belegposition",
+      "icon": "CreditCard"
+    }
+  ],
+  "attributes": {
+    "dietary": ["organic", "bio", "vegan", "vegetarian", "gluten_free", "lactose_free", "halal", "kosher"],
+    "temperature": ["ambient", "chilled", "frozen", "hot"],
+    "perishability": ["perishable", "non_perishable"],
+    "packaging": ["einweg", "mehrweg"],
+    "alcohol_type": ["beer", "wine", "spirits"],
+    "pharmacy_form": ["tablets", "syrup", "drops", "cream", "spray"],
+    "restaurant_service": ["dine_in", "takeaway", "delivery"]
+  },
+  "mapping_hints": {
+    "locale_notes": [
+      "DE: Watch for VAT 7% vs 19% per line; keep VAT as attribute.",
+      "DE: 'Pfand' lines are deposits; match with the preceding beverage if possible.",
+      "US: Sales tax is typically summarized at bottom; item lines are pre-tax."
+    ],
+    "coupled_lines": "Discounts and deposits often appear as separate lines. Keep references (e.g., adjusts_item_ids, deposit_on_item_id) when possible.",
+    "unknown_fallback": "Map unknown SKUs to MISC and queue for learning."
+  }
+}

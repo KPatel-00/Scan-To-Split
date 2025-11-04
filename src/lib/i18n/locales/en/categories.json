@@ -1,0 +1,108 @@
+{
+  "categories": {
+    "GROC": "Grocery & Food",
+    "GROC.PRODUCE": "Produce",
+    "GROC.MEAT": "Meat & Poultry",
+    "GROC.SEAFOOD": "Seafood",
+    "GROC.DAIRY": "Dairy & Eggs",
+    "GROC.BAKERY": "Bakery",
+    "GROC.PANTRY": "Pantry",
+    "GROC.BREAKFAST": "Breakfast & Cereal",
+    "GROC.SNACKS": "Snacks",
+    "GROC.CONFECTIONERY": "Confectionery",
+    "GROC.FROZEN": "Frozen Foods",
+    "GROC.READY": "Ready-to-Eat",
+    "GROC.BEVERAGES": "Beverages",
+    "GROC.INTERNATIONAL": "International",
+    "GROC.BABY": "Baby Food",
+    "GROC.PET": "Pet Food",
+    
+    "ALCO": "Alcoholic Beverages",
+    "TOBA": "Tobacco & Smoking",
+    "DRUG": "Drugstore / Personal Care",
+    "PHAR": "Health & Pharmacy",
+    "HOME": "Household Supplies",
+    "PETS": "Pet Supplies",
+    "DIYH": "DIY / Hardware",
+    "FURN": "Furniture & Home",
+    "ELEC": "Electronics",
+    "APPL": "Large Appliances",
+    "OFFI": "Office & Stationery",
+    "BOOK": "Books & Media",
+    "TOYS": "Toys & Hobbies",
+    "CLTH": "Apparel & Accessories",
+    "SPOR": "Sports & Outdoors",
+    "AUTO": "Auto & Mobility",
+    "GARD": "Garden & Plants",
+    "REST": "Restaurant",
+    "SERV": "In-Store Services",
+    "TCOM": "Telco & Digital",
+    "GIFT": "Gift Cards",
+    "POST": "Postage & Lottery",
+    "MISC": "Miscellaneous",
+    
+    "TAX": "Tax",
+    "DEPO": "Deposit",
+    "DEPO_RET": "Deposit Return",
+    "DISC": "Discount",
+    "FEES": "Fees",
+    "SHIP": "Shipping",
+    "TIP": "Tip",
+    "ROUND": "Rounding",
+    "REFUND": "Refund",
+    "CASHBK": "Cashback",
+    "DONAT": "Donation",
+    "PAYMT": "Payment"
+  },
+  "sections": {
+    "items": "Items",
+    "discounts": "Discounts",
+    "deposits": "Deposits (Pfand)",
+    "fees": "Fees",
+    "tips": "Tips",
+    "tax": "Tax (Included)"
+  },
+  "groups": {
+    "grocery": "Grocery & Food",
+    "retail": "Retail & Others",
+    "service": "Services",
+    "special": "Special Lines"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "description": "Insights into your spending patterns",
+    "categoryBreakdown": {
+      "title": "Spending by Category",
+      "description": "See where your money went",
+      "itemCount": "{{count}} item",
+      "itemCount_plural": "{{count}} items"
+    },
+    "topCategories": {
+      "title": "Top Categories"
+    },
+    "savings": {
+      "title": "Savings & Deposits",
+      "discounts": "Total Saved",
+      "discountsDesc": "From coupons and promotions",
+      "deposits": "Active Deposits",
+      "depositsDesc": "Can be returned for cash"
+    },
+    "stats": {
+      "totalSpent": "Total Spent",
+      "totalItems": "Total Items",
+      "avgPerItem": "Avg per Item"
+    }
+  },
+  "common": {
+    "items": "items",
+    "retry": "Try Again"
+  },
+  "migration": {
+    "title": "Update Available",
+    "description": "A new categorization system is available. Migrate your data to unlock new features.",
+    "inProgress": "Migrating...",
+    "complete": "Successfully migrated {{count}} items!",
+    "button": "Migrate Now",
+    "error": "Migration failed"
+  }
+}

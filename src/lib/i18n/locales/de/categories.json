@@ -1,0 +1,107 @@
+{
+  "categories": {
+    "GROC": "Lebensmittel",
+    "GROC.PRODUCE": "Obst & Gemüse",
+    "GROC.MEAT": "Fleisch & Geflügel",
+    "GROC.SEAFOOD": "Fisch & Meeresfrüchte",
+    "GROC.DAIRY": "Molkerei & Eier",
+    "GROC.BAKERY": "Bäckerei",
+    "GROC.PANTRY": "Vorrat",
+    "GROC.BREAKFAST": "Frühstück",
+    "GROC.SNACKS": "Snacks",
+    "GROC.CONFECTIONERY": "Süßwaren",
+    "GROC.FROZEN": "Tiefkühl",
+    "GROC.READY": "Fertiggerichte",
+    "GROC.BEVERAGES": "Getränke",
+    "GROC.INTERNATIONAL": "International",
+    "GROC.BABY": "Babynahrung",
+    "GROC.PET": "Tiernahrung",
+    
+    "ALCO": "Alkoholische Getränke",
+    "TOBA": "Tabakwaren",
+    "DRUG": "Drogerie & Körperpflege",
+    "PHAR": "Gesundheit / Apotheke",
+    "HOME": "Haushalt",
+    "PETS": "Tierbedarf",
+    "DIYH": "Baumarkt",
+    "FURN": "Möbel & Wohnen",
+    "ELEC": "Elektronik",
+    "APPL": "Großgeräte",
+    "OFFI": "Büro & Schreibwaren",
+    "BOOK": "Bücher & Medien",
+    "TOYS": "Spielwaren & Basteln",
+    "CLTH": "Bekleidung & Accessoires",
+    "SPOR": "Sport & Outdoor",
+    "AUTO": "Auto & Mobilität",
+    "GARD": "Garten & Pflanzen",
+    "REST": "Gastronomie",
+    "SERV": "Dienstleistungen",
+    "TCOM": "Telekom & Digital",
+    "GIFT": "Gutscheine",
+    "POST": "Porto & Lotto",
+    "MISC": "Sonstiges",
+    
+    "TAX": "MwSt.",
+    "DEPO": "Pfand",
+    "DEPO_RET": "Pfandrückgabe",
+    "DISC": "Rabatt",
+    "FEES": "Gebühren",
+    "SHIP": "Versand",
+    "TIP": "Trinkgeld",
+    "ROUND": "Rundung",
+    "REFUND": "Erstattung",
+    "CASHBK": "Barauszahlung",
+    "DONAT": "Spende",
+    "PAYMT": "Zahlung"
+  },
+  "sections": {
+    "items": "Artikel",
+    "discounts": "Rabatte",
+    "deposits": "Pfand",
+    "fees": "Gebühren",
+    "tips": "Trinkgeld",
+    "tax": "MwSt. (inkl.)"
+  },
+  "groups": {
+    "grocery": "Lebensmittel",
+    "retail": "Einzelhandel",
+    "service": "Dienstleistungen",
+    "special": "Sonderposten"
+  },
+  "analytics": {
+    "title": "Statistiken",
+    "description": "Einblicke in Ihre Ausgaben",
+    "categoryBreakdown": {
+      "title": "Ausgaben nach Kategorie",
+      "description": "Sehen Sie, wohin Ihr Geld ging",
+      "itemCount": "{{count}} Artikel"
+    },
+    "topCategories": {
+      "title": "Top-Kategorien"
+    },
+    "savings": {
+      "title": "Einsparungen & Pfand",
+      "discounts": "Gesamt gespart",
+      "discountsDesc": "Durch Gutscheine und Aktionen",
+      "deposits": "Aktives Pfand",
+      "depositsDesc": "Kann gegen Bargeld zurückgegeben werden"
+    },
+    "stats": {
+      "totalSpent": "Gesamt ausgegeben",
+      "totalItems": "Gesamt Artikel",
+      "avgPerItem": "Durchschn. pro Artikel"
+    }
+  },
+  "common": {
+    "items": "Artikel",
+    "retry": "Erneut versuchen"
+  },
+  "migration": {
+    "title": "Update verfügbar",
+    "description": "Ein neues Kategorisierungssystem ist verfügbar. Migrieren Sie Ihre Daten, um neue Funktionen freizuschalten.",
+    "inProgress": "Migriere...",
+    "complete": "{{count}} Artikel erfolgreich migriert!",
+    "button": "Jetzt migrieren",
+    "error": "Migrationsfehler"
+  }
+}

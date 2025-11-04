@@ -1,0 +1,597 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-inter: 'Inter', system-ui, sans-serif;
+    
+    /* Layout Constants */
+    --header-height: 4rem; /* 64px - App header height */
+    
+    /* Minimalist Light Theme - Pure white background */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    
+    /* Primary CTA - Black in light mode */
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    
+    /* Secondary - Light gray */
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    
+    /* Muted - Subtle gray for descriptions */
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    
+    /* Accent - Subtle gray for hover states */
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    
+    /* Destructive - Red for errors */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    
+    /* Borders - Very light gray */
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    
+    /* Focus ring - Black */
+    --ring: 0 0% 3.9%;
+    
+    /* Border radius - Slightly rounded for modern feel */
+    --radius: 0.5rem;
+    
+    /* ✨ Premium Timing Functions - Reusable easing curves */
+    --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* ✨ Premium Duration Scale - Consistent timing */
+    --duration-instant: 100ms;
+    --duration-fast: 200ms;
+    --duration-normal: 300ms;
+    --duration-slow: 500ms;
+    --duration-slower: 700ms;
+    
+    /* ✨ Premium Z-Index Scale - Layering system */
+    --z-base: 0;
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    --z-toast: 9999;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    /* Minimalist Dark Theme - Pure black background */
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    
+    /* Primary CTA - White in dark mode */
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    
+    /* Secondary - Dark gray */
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    
+    /* Muted - Subtle gray for descriptions */
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    
+    /* Accent - Subtle gray for hover states */
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    
+    /* Destructive - Red for errors */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    
+    /* Borders - Very dark gray */
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    
+    /* Focus ring - White */
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: var(--font-inter);
+  }
+  
+  /* Premium smooth color transitions for theme changes - Optimized hybrid approach */
+  /* Transition only on elements that need it, not everything */
+  body,
+  header,
+  main,
+  footer,
+  [class*="bg-"],
+  [class*="text-"],
+  [class*="border-"] {
+    transition-property: background-color, border-color, color, background, box-shadow;
+    transition-timing-function: var(--ease-smooth);
+    transition-duration: var(--duration-normal);
+  }
+  
+  /* Prevent transition on page load */
+  .preload * {
+    transition: none !important;
+  }
+  
+  /* Exception: Keep framer-motion animations separate */
+  [data-framer-motion],
+  .framer-motion-ignore {
+    transition: none !important;
+  }
+  
+  /* ✨ Premium GPU acceleration for interactive elements */
+  button,
+  a,
+  [role="button"],
+  .gpu-accelerate {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  
+  /* ✨ View Transition API support for ultra-smooth theme switching */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: var(--duration-normal);
+    animation-timing-function: var(--ease-smooth);
+  }
+}
+
+/* ✨ Premium Accessibility - Skip to Main Content Link */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: var(--z-toast);
+  padding: 1rem 1.5rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 0 0 0.5rem 0.5rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transition-property: left, transform;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-smooth);
+  transform: translateZ(0);
+  will-change: transform, left;
+}
+
+.skip-to-content:focus {
+  left: 1rem;
+  outline: 3px solid hsl(var(--ring));
+  outline-offset: 2px;
+  transform: translateZ(0) scale(1.02);
+}
+
+/* ✨ Scroll Margin for Anchor Links - Prevents sticky header overlap */
+:root {
+  scroll-margin-top: 80px;
+}
+
+:target {
+  scroll-margin-top: 80px;
+  scroll-padding-top: 80px;
+}
+
+/* ✨ Premium Glassmorphism Header Effect */
+@layer components {
+  .glass-header {
+    /* Semi-transparent background with theme awareness */
+    background: linear-gradient(
+      to bottom,
+      hsl(var(--background) / 0.9),
+      hsl(var(--background) / 0.75)
+    );
+    
+    /* Enhanced backdrop blur for frosted glass effect */
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    
+    /* Subtle inset shadow for depth */
+    box-shadow: 
+      inset 0 1px 0 0 hsl(var(--foreground) / 0.05),
+      0 1px 2px 0 hsl(var(--foreground) / 0.05);
+    
+    /* ✨ Premium transitions using CSS variables */
+    transition-property: background, border-color, box-shadow;
+    transition-duration: var(--duration-normal);
+    transition-timing-function: var(--ease-smooth);
+    
+    /* ✨ Force hardware acceleration for smoother rendering */
+    transform: translateZ(0);
+    will-change: background, border-color, box-shadow;
+  }
+  
+  /* Dark mode enhancement */
+  .dark .glass-header {
+    background: linear-gradient(
+      to bottom,
+      hsl(var(--background) / 0.85),
+      hsl(var(--background) / 0.7)
+    );
+    
+    box-shadow: 
+      inset 0 1px 0 0 hsl(var(--foreground) / 0.1),
+      0 1px 3px 0 hsl(var(--foreground) / 0.2);
+  }
+}
+
+/* Respect user's reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .skip-to-content:focus {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* ✨ Premium smooth scrolling for non-reduced-motion users */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Buttery smooth scroll-snap for landing page */
+  [data-scroll-container] {
+    scroll-snap-type: y mandatory;
+    scroll-snap-stop: always;
+    
+    /* Scroll padding prevents content from being hidden behind header */
+    scroll-padding-top: 0;
+    scroll-padding-bottom: 0;
+    
+    /* Smooth momentum scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+    
+    /* GPU acceleration for smooth transforms */
+    will-change: scroll-position;
+    
+    /* Prevent layout shift during scroll */
+    overflow-anchor: none;
+    
+    /* REMOVED: contain: layout style paint; - This was blocking Intersection Observer! */
+    
+    /* Hide scrollbar for premium aesthetic */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  
+  /* Hide scrollbar in Webkit browsers (Chrome, Safari, Opera) */
+  [data-scroll-container]::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Ultra-smooth snap points with optimized rendering */
+  [data-chapter] {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    
+    /* Prevent flicker during transitions */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    
+    /* Optimize compositing layers */
+    contain: layout style paint;
+    content-visibility: auto;
+  }
+}
+
+/* ============================================================================
+ * GLOBAL RESPONSIVE UTILITIES
+ * Pure CSS/Tailwind approach - SSR-safe, performant, declarative
+ * ============================================================================ */
+
+@layer utilities {
+  /* Responsive containers - replaces ResponsiveLayout.tsx */
+  .container-responsive {
+    @apply px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16;
+  }
+  
+  /* Responsive section spacing - replaces manual padding logic */
+  .section-spacing {
+    @apply py-8 sm:py-12 md:py-16 lg:py-20 xl:py-24;
+  }
+  
+  /* Responsive grid - auto-adapts columns based on viewport */
+  .grid-responsive {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8;
+  }
+  
+  /* Responsive flex - column on mobile, row on desktop */
+  .flex-responsive {
+    @apply flex flex-col md:flex-row gap-4 md:gap-6 lg:gap-8;
+  }
+  
+  /* Hero section layout - 2-column on desktop, stacked on mobile */
+  .hero-layout {
+    @apply flex flex-col lg:flex-row items-center gap-8 lg:gap-12 xl:gap-16;
+  }
+  
+  /* Chapter container - full viewport height with responsive padding */
+  .chapter-container {
+    @apply min-h-screen flex items-center justify-center;
+    @apply px-4 sm:px-6 md:px-8 lg:px-12;
+    @apply py-12 sm:py-16 md:py-20 lg:py-24;
+  }
+  
+  /* Centered content with max-width - replaces manual container logic */
+  .content-center {
+    @apply max-w-7xl mx-auto w-full;
+  }
+  
+  /* Responsive text balance - prevents orphans on large screens */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Foldable-aware layouts - split across hinge */
+  .fold-split {
+    @apply flex flex-col fold-v:flex-row;
+  }
+  
+  .fold-split > * {
+    @apply w-full fold-v:w-1/2;
+  }
+  
+  /* Flip phone flex mode - horizontal split (top/bottom) */
+  .flip-split {
+    @apply flex flex-col fold-h:flex-col h-screen;
+  }
+  
+  .flip-split > * {
+    @apply flex-1 fold-h:h-1/2;
+  }
+  
+  /* Orientation-aware utilities */
+  .portrait-stack {
+    @apply flex flex-col portrait:flex-col landscape:flex-row;
+  }
+  
+  .landscape-stack {
+    @apply flex flex-row landscape:flex-row portrait:flex-col;
+  }
+  
+  /* Responsive max-widths for content */
+  .max-w-responsive {
+    @apply max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-6xl 2xl:max-w-7xl;
+  }
+  
+  /* Responsive gap utilities */
+  .gap-responsive {
+    @apply gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12;
+  }
+  
+  /* Ultra-wide desktop constraint (prevents content from being too wide) */
+  .ultra-wide-container {
+    @apply max-w-7xl mx-auto;
+  }
+}
+
+/* ============================================================================
+ * PREMIUM VISUAL EFFECTS & UTILITIES
+ * Advanced effects for premium UI/UX
+ * Merged from src/styles/premium.css for better maintainability
+ * ============================================================================ */
+
+@layer utilities {
+  /* Premium Gradient Text */
+  .gradient-text {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--foreground)) 0%,
+      hsl(var(--muted-foreground)) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Premium Glass Effect */
+  .glass-effect {
+    background: hsl(var(--background) / 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  /* Premium Shadow Utilities */
+  .shadow-premium {
+    box-shadow: 
+      0 1px 2px hsl(var(--foreground) / 0.05),
+      0 4px 8px hsl(var(--foreground) / 0.08),
+      0 12px 24px hsl(var(--foreground) / 0.12);
+  }
+
+  .shadow-premium-lg {
+    box-shadow: 
+      0 2px 4px hsl(var(--foreground) / 0.06),
+      0 8px 16px hsl(var(--foreground) / 0.1),
+      0 24px 48px hsl(var(--foreground) / 0.15);
+  }
+
+  /* Premium Focus Ring */
+  .focus-premium:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* ✨ Smooth Scrolling Container */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ✨ Print Utilities - Accessibility & Utility */
+  .no-print {
+    display: none !important;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+  
+  /* Optimize for print - remove shadows and effects */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  /* Preserve text color for readability */
+  body {
+    color: #000 !important;
+    background: #fff !important;
+  }
+}
+
+@layer components {
+  /* ✨ Premium Underline Effect - Interactive hover state */
+  .premium-underline {
+    position: relative;
+    display: inline-block;
+  }
+
+  .premium-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition-property: transform;
+    transition-duration: var(--duration-normal);
+    transition-timing-function: var(--ease-premium);
+  }
+
+  .premium-underline:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+/* ============================================================================
+ * CSS-ONLY ANIMATIONS
+ * Only for effects that CANNOT be achieved with Framer Motion
+ * (Background animations, shimmer effects, etc.)
+ * ============================================================================ */
+
+/* ✨ Smooth Gradient Shift - For animated backgrounds */
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+/* ✨ Text Shimmer Effect - For loading/highlighting text */
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--foreground)) 0%,
+    hsl(var(--primary)) 50%,
+    hsl(var(--foreground)) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+/* ✨ Icon Pulse Animation - For CTA icon breathing effect */
+@keyframes icon-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+.animate-icon-pulse {
+  animation: icon-pulse 1.2s ease-in-out infinite;
+  animation-delay: 0.3s;
+  display: inline-block;
+  transform-origin: center;
+}
+
+/* Reduced Motion Support for Premium Animations */
+@media (prefers-reduced-motion: reduce) {
+  .animate-gradient,
+  .text-shimmer,
+  .animate-icon-pulse,
+  .premium-underline::after {
+    animation: none;
+    transition: none;
+  }
+}

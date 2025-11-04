@@ -1,0 +1,39 @@
+✅ Create a comprehensive guideline to follow, to avoid duplicacy, redundancy, localisation, fragmentation of project files, naming inconsistency, multiple files serving same purpose for different sections/pages, very deep nested project tree, etc…
+    → Created DEVELOPMENT_GUIDELINES.md
+      ✓ 7 Core Principles
+      ✓ 8 Code Quality sections
+      ✓ 5 NEW Performance & Best Practices sections
+      ✓ 8 Standards sections
+    → Created docs/QUICK_REFERENCE.md (printable quick reference card)
+    → Created docs/PRE_COMMIT_CHECKLIST.md (quality gate checklist)
+    → Created docs/GUIDELINES_SUMMARY.md (executive overview)
+    → Updated .github/copilot-instructions.md to reference new guidelines
+    
+    📊 Coverage:
+    ✅ SOLID Principles
+    ✅ DRY, KISS, YAGNI
+    ✅ Performance Optimization
+    ✅ Error Handling & Resilience
+    ✅ Security (XSS prevention)
+    ✅ Accessibility
+    ✅ Testing Strategy
+    ✅ Version Control & Collaboration
+    ✅ Monitoring & Observability
+    ✅ Design System Compliance
+    
+Refactor
+Globalize
+Landing Page all chapters
+    hero chapter - all animations
+Bill input page
+item assignment page
+summary page
+add comments to each project file explaining its purpose, usage, and any important details.
+Global responsive design
+create a global design system / component library to be used across all pages and features, ensuring consistency in UI elements, styles, and interactions.
+    → Extract common components (buttons, inputs, badges, modals) into src/components/
+    → Define global Tailwind CSS styles and design tokens
+    → Update existing pages to utilize the new design system components
+    → Ensure responsiveness and accessibility standards are met across all components
+create a global design system markdown documentation file outlining design principles, component usage, and styling guidelines.
+

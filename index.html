@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- ✨ PROMPT 7: Critical Asset Preloading -->
+    <!-- Preload critical resources to start downloading immediately -->
+    <!-- This prevents FOIT (Flash of Invisible Text) and improves LCP -->
+    
+    <!-- Preconnect to external domains (if any) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    
+    <!-- DNS prefetch for faster subsequent requests -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    
+    <title>ScanToSplit.ai - AI-Powered Bill Splitting</title>
+    
+    <!-- Performance optimization meta tags -->
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="AI-powered bill splitting with smart receipt scanning - Split bills effortlessly" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
