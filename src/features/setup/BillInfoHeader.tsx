@@ -47,7 +47,7 @@ export function BillInfoHeader({ calculatedTotal, itemCount }: BillInfoHeaderPro
 
   return (
     <motion.div variants={fadeInUp}>
-      <Card className="mb-8 overflow-hidden border border-border/40 bg-gradient-to-br from-primary/5 via-card/50 to-primary/10 p-6 shadow-md backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
+      <Card className="overflow-hidden border-x border-t border-border/40 border-b-0 bg-gradient-to-br from-primary/5 via-card/50 to-primary/10 p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md hover:bg-gradient-to-br hover:from-primary/10 hover:via-card/60 hover:to-primary/15 cursor-pointer">
         {/* Currency Selector - Top Right */}
         <div className="mb-4 flex justify-end">
           <CurrencySelector />

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Package, Tag, RecycleIcon, Coins, DollarSign, Receipt } from 'lucide-react';
+import { Plus, Package, Tag, RecycleIcon, Coins, DollarSign, Receipt, ChevronDown, Search } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { Separator } from '../../components/ui/separator';
 import { useStore } from '../../store/useStore';
@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { staggerContainer } from '../../lib/motion';
 import { getCategoryName } from '../../lib/taxonomy/migration';
 import { isSpecialLine, isPfandLine, isDiscountLine, isTipLine, isFeeLine } from '../../lib/taxonomy/specialLines';
+import { feedback } from '../../lib/feedback';
 
 export function ItemsList() {
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ export function ItemsList() {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [isItemsExpanded, setIsItemsExpanded] = useState(true);
 
   // Filter items based on search
   const filteredItems = useMemo(() => {
@@ -71,49 +73,157 @@ export function ItemsList() {
   // Check if multiple receipts were merged
   const hasMultipleReceipts = items.some((item) => item.originReceiptId);
 
+  const toggleItemsExpanded = () => {
+    setIsItemsExpanded(!isItemsExpanded);
+    feedback.click(); // Tactile feedback
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Bill Info Header */}
+    <div className="space-y-0">
+      {/* Bill Info Header - Collapsible */}
       {items.length > 0 && (
-        <BillInfoHeader
-          calculatedTotal={calculatedTotal}
-          itemCount={items.length}
-        />
+        <div>
+          {/* Clickable Header */}
+          <button
+            onClick={toggleItemsExpanded}
+            className="w-full text-left transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 rounded-xl"
+            aria-expanded={isItemsExpanded}
+            aria-label={isItemsExpanded ? t('setup.itemsList.collapseItems', 'Collapse items') : t('setup.itemsList.expandItems', 'Expand items')}
+          >
+            <BillInfoHeader
+              calculatedTotal={calculatedTotal}
+              itemCount={items.length}
+            />
+            
+            {/* Expansion Indicator - Premium Style */}
+            <motion.div
+              className="flex items-center justify-center gap-2 -mt-2 mb-4 text-sm text-muted-foreground"
+              initial={false}
+              animate={{
+                opacity: isItemsExpanded ? 0.6 : 1,
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              <AnimatePresence mode="wait">
+                {!isItemsExpanded && (
+                  <motion.div
+                    key="hint"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex items-center gap-2"
+                  >
+                    <Search className="h-3.5 w-3.5" />
+                    <span className="font-medium">View & Search Items</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              
+              <motion.div
+                animate={{
+                  rotate: isItemsExpanded ? 180 : 0,
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 20,
+                }}
+              >
+                <ChevronDown className="h-5 w-5" />
+              </motion.div>
+            </motion.div>
+          </button>
+
+          {/* Visual Connection - Only when expanded */}
+          <AnimatePresence>
+            {isItemsExpanded && (
+              <motion.div
+                initial={{ opacity: 0, scaleX: 0 }}
+                animate={{ opacity: 1, scaleX: 1 }}
+                exit={{ opacity: 0, scaleX: 0 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30,
+                }}
+                className="h-px bg-gradient-to-r from-transparent via-border/40 to-transparent mb-2"
+              />
+            )}
+          </AnimatePresence>
+        </div>
       )}
 
-      {/* Collapsible Search Bar */}
-      <ItemSearchBar
-        value={searchQuery}
-        onChange={setSearchQuery}
-        showSearchText={false}
-        zIndex={10}
-      />
+      {/* Collapsible Items Section */}
+      <AnimatePresence mode="wait">
+        {isItemsExpanded && (
+          <motion.div
+            key="items-section"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ 
+              height: "auto", 
+              opacity: 1,
+              transition: {
+                height: {
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30,
+                },
+                opacity: {
+                  duration: 0.4,
+                  delay: 0.1,
+                }
+              }
+            }}
+            exit={{ 
+              height: 0, 
+              opacity: 0,
+              transition: {
+                height: {
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30,
+                },
+                opacity: {
+                  duration: 0.2,
+                }
+              }
+            }}
+            className="overflow-hidden"
+          >
+            {/* Search Bar - Collapsible */}
+            <ItemSearchBar 
+              value={searchQuery} 
+              onChange={setSearchQuery}
+              collapsible={true}
+              zIndex={10}
+            />
 
-      {/* Items List or Empty State */}
-      {items.length === 0 ? (
-        <EmptyState
-          icon={<Package className="h-12 w-12" />}
-          title={t('setup.itemsList.emptyStates.noItems.title')}
-          description={t('setup.itemsList.emptyStates.noItems.description')}
-        />
-      ) : filteredItems.length === 0 ? (
-        <EmptyState
-          icon={<Package className="h-12 w-12" />}
-          title={t('setup.itemsList.emptyStates.noResults.title')}
-          description={t('setup.itemsList.emptyStates.noResults.description', { query: searchQuery })}
-          action={
-            <Button variant="outline" onClick={() => setSearchQuery('')}>
-              {t('setup.itemsList.emptyStates.noResults.action')}
-            </Button>
-          }
-        />
-      ) : (
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate="show"
-          className="space-y-8"
-        >
+            {/* Items List or Empty State */}
+            {items.length === 0 ? (
+              <EmptyState
+                icon={<Package className="h-12 w-12" />}
+                title={t('setup.itemsList.emptyStates.noItems.title')}
+                description={t('setup.itemsList.emptyStates.noItems.description')}
+              />
+            ) : filteredItems.length === 0 ? (
+              <EmptyState
+                icon={<Package className="h-12 w-12" />}
+                title={t('setup.itemsList.emptyStates.noResults.title')}
+                description={t('setup.itemsList.emptyStates.noResults.description', { query: searchQuery })}
+                action={
+                  <Button variant="outline" onClick={() => setSearchQuery('')}>
+                    {t('setup.itemsList.emptyStates.noResults.action')}
+                  </Button>
+                }
+              />
+            ) : (
+              <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                animate="show"
+                className="rounded-xl border border-x border-border/40 border-t-0 bg-card/30 p-6 backdrop-blur-sm shadow-sm space-y-8"
+              >
           {/* Regular Items - Premium Section */}
           {itemGroups.regular.length > 0 && (
             <div className="space-y-4">
@@ -300,14 +410,17 @@ export function ItemsList() {
               </div>
             </>
           )}
-        </motion.div>
-      )}
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Add Manual Item Button */}
+      {/* Add Manual Item Button - Always visible outside collapsible area */}
       <Button
         onClick={() => setShowAddDialog(true)}
         variant="outline"
-        className="w-full"
+        className="w-full mt-6"
         size="lg"
       >
         <Plus />
