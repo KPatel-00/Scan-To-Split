@@ -74,12 +74,23 @@ src/
 └── components/ui/      # shadcn/ui primitives
 ```
 
-**Recent Refactoring (Nov 4, 2025)**:
+**Recent Refactoring (Nov 4-5, 2025)**:
 - **ScanPortal.tsx**: 658 → 183 lines (72% reduction)
   - Phase 1: Extracted 6 UI components to `src/features/setup/components/`
   - Phase 2: Extracted 2 hooks to `src/features/setup/hooks/`
   - Phase 3: Moved animations to global motion library (`fadeInUp` added)
-- **Zero breaking changes**: All functionality preserved, TypeScript errors remain at 36 (pre-existing in analytics)
+- **DataHub Premium Upgrade**: Complete design transformation (Nov 5, 2025)
+  - **New Components**:
+    - `PremiumSectionHeader.tsx` - Reusable section header with 4 variants (default/success/info/warning)
+    - `PremiumItemCard.tsx` - Glass morphism item display with tactile feedback
+  - **Upgraded Components** (7 files, +390/-180 lines):
+    - `DataHub.tsx` - staggerContainer animations, premium typography, increased spacing
+    - `ItemsList.tsx` - PremiumSectionHeader for all groups, PremiumItemCard throughout
+    - `ParticipantsSection.tsx` - Glass morphism container, premium header
+    - `ParticipantCard.tsx` - cardTactile feedback, reduced motion support
+    - `BillInfoHeader.tsx` - Premium typography, glass gradient backgrounds
+  - **Design Language**: Glass morphism (bg-card/50 backdrop-blur-sm), tactile feedback (cardTactile), generous spacing (py-12, gap-8)
+- **Zero breaking changes**: All functionality preserved, 0 TypeScript errors (clean production build)
 
 ## ⚡ Zustand State Patterns
 
@@ -260,6 +271,86 @@ className="border-border ring-ring"
 // ❌ Inline hex or hardcoded (breaks theme switching)
 className="bg-white text-black"
 className="bg-[#4f46e5]"
+```
+
+## 🎨 Premium DataHub Design Patterns (Nov 5, 2025)
+
+**Glass Morphism System** - Applied to all DataHub cards:
+```tsx
+// ✅ Premium card styling
+className="bg-card/50 backdrop-blur-sm border border-border/40 shadow-sm"
+className="hover:border-border hover:shadow-md transition-all duration-300"
+
+// Gradient overlays (BillInfoHeader, ParticipantsSection)
+className="bg-gradient-to-br from-primary/5 via-card/50 to-primary/10"
+className="bg-gradient-to-b from-muted/30 to-transparent"
+```
+
+**Tactile Feedback** - Smooth hover/tap animations:
+```tsx
+import { cardTactile } from '@/lib/motion';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+
+const prefersReducedMotion = useReducedMotion();
+
+// ✅ Reduced motion aware (PremiumItemCard, ParticipantCard)
+<motion.div
+  whileHover={prefersReducedMotion ? undefined : cardTactile.hover}
+  whileTap={prefersReducedMotion ? undefined : cardTactile.tap}
+>
+```
+
+**Premium Section Headers** - Reusable component with variants:
+```tsx
+import { PremiumSectionHeader } from '@/features/setup/components/PremiumSectionHeader';
+import { Package, Tag, RecycleIcon, Coins } from 'lucide-react';
+
+// ✅ 4 variants: default, success (green), info (blue), warning (orange)
+<PremiumSectionHeader 
+  icon={Package} 
+  title="Items" 
+  count={15} 
+/>
+<PremiumSectionHeader 
+  icon={Tag} 
+  title="Discounts" 
+  count={3} 
+  variant="success" 
+/>
+```
+
+**Animation Hierarchy** - staggerContainer + fadeInUp:
+```tsx
+import { staggerContainer, fadeInUp } from '@/lib/motion';
+
+// ✅ Parent container with stagger
+<motion.div
+  variants={staggerContainer}
+  initial="hidden"
+  animate="show"
+  className="space-y-8"
+>
+  {/* Children with fadeInUp */}
+  <motion.div variants={fadeInUp}>
+    <PremiumSectionHeader />
+  </motion.div>
+  
+  {items.map(item => (
+    <motion.div key={item.id} layout>
+      <PremiumItemCard item={item} />
+    </motion.div>
+  ))}
+</motion.div>
+```
+
+**Premium Typography** - Display scales for headers:
+```tsx
+import { typography } from '@/lib/typography';
+
+// ✅ DataHub premium text hierarchy
+<h2 className={typography.display.md}>Bill Information</h2>
+<h3 className={typography.heading.h3}>Store Name</h3>
+<div className={typography.display.md}>$123.45</div>
 ```
 
 ## 🔧 Key Implementation Patterns
