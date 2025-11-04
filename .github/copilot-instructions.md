@@ -11,12 +11,9 @@ npm run build    # MUST pass before commits (zero TypeScript errors)
 npm run lint     # Must pass (zero warnings)
 ```
 
-**Environment Setup** (Windows PowerShell):
-```powershell
-# 1. Copy environment template
-Copy-Item .env.example .env
-
-# 2. Add your Gemini API key to .env
+**Environment Setup**:
+```bash
+# Add your Gemini API key to .env file (create if needed)
 # VITE_GOOGLE_GEMINI_API_KEY=your_key_here
 ```
 
@@ -382,7 +379,7 @@ const items = useStore((state) => state.items);
 console.log('Items only:', items);
 ```
 
-## 🎯 Current Status (Oct 31, 2025)
+## 🎯 Current Status (Nov 4, 2025)
 
 **Complete**: Motion library (42 presets), Typography system, Tailwind infrastructure, Zustand refactor (9 slices)
 **Active**: Landing page responsive polish, performance optimization

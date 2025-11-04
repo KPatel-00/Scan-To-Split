@@ -64,6 +64,7 @@ export {
   contentEntryTransition,
   staggerContainer,
   staggerItem,
+  fadeInUp,
   fastStaggerContainer,
   // Word-by-word reveal patterns
   wordByWordContainer,

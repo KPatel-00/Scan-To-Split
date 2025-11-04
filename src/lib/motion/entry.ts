@@ -80,6 +80,29 @@ export const staggerItem: Variants = {
 };
 
 /**
+ * Fade in + slide up animation (alias for contentEntry pattern)
+ * Common pattern for sections, cards, and content blocks
+ * 
+ * Physics: gentleNormal (smooth 200-300ms feel)
+ * 
+ * Usage:
+ * ```tsx
+ * <motion.div variants={fadeInUp}>
+ * ```
+ */
+export const fadeInUp: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 20,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: smoothNormal,
+  },
+};
+
+/**
  * Scale + fade entry (for badges, pills, cards)
  * Used in: FeaturePill, ChapterBadge, small interactive elements
  * 
