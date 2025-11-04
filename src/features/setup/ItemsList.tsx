@@ -1,18 +1,18 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Package } from 'lucide-react';
+import { Plus, Package, Tag, RecycleIcon, Coins, DollarSign, Receipt } from 'lucide-react';
 import { Button } from '../../components/ui/button';
-import { Badge } from '../../components/ui/badge';
 import { Separator } from '../../components/ui/separator';
 import { useStore } from '../../store/useStore';
 import { CurrencySelector } from './CurrencySelector';
 import { ItemSearchBar } from './ItemSearchBar';
 import { BillInfoHeader } from './BillInfoHeader';
-import { ItemRow } from '../../components/item-row';
+import { PremiumItemCard } from './components/PremiumItemCard';
+import { PremiumSectionHeader } from './components/PremiumSectionHeader';
 import { AddItemDialog } from '../../components/AddItemDialog';
 import { EmptyState } from '../../components/EmptyState';
 import { motion, AnimatePresence } from 'framer-motion';
-import { layoutTransition } from '../../lib/motion';
+import { staggerContainer, layoutTransition } from '../../lib/motion';
 import { getCategoryName } from '../../lib/taxonomy/migration';
 import { isSpecialLine, isPfandLine, isDiscountLine, isTipLine, isFeeLine } from '../../lib/taxonomy/specialLines';
 
@@ -72,17 +72,6 @@ export function ItemsList() {
   // Check if multiple receipts were merged
   const hasMultipleReceipts = items.some((item) => item.originReceiptId);
 
-  // Container animations
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05,
-      },
-    },
-  };
-
   return (
     <div className="space-y-6">
       {/* Currency Selector */}
@@ -124,28 +113,27 @@ export function ItemsList() {
         />
       ) : (
         <motion.div
-          variants={containerVariants}
+          variants={staggerContainer}
           initial="hidden"
-          animate="visible"
-          className="space-y-6"
+          animate="show"
+          className="space-y-8"
         >
-          {/* Regular Items */}
+          {/* Regular Items - Premium Section */}
           {itemGroups.regular.length > 0 && (
-            <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-muted-foreground">
-                {t('categories.sections.items', 'Items')}
-              </h3>
+            <div className="space-y-4">
+              <PremiumSectionHeader
+                icon={Package}
+                title={t('categories.sections.items', 'Items')}
+                count={itemGroups.regular.length}
+              />
               <AnimatePresence mode="popLayout">
                 {itemGroups.regular.map((item) => (
                   <motion.div
                     key={item.id}
                     layout
                     transition={layoutTransition}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
                   >
-                    <ItemRow
+                    <PremiumItemCard
                       item={item}
                       showOriginBadge={hasMultipleReceipts}
                     />
@@ -155,30 +143,25 @@ export function ItemsList() {
             </div>
           )}
 
-          {/* Discounts */}
+          {/* Discounts - Premium Success Variant */}
           {itemGroups.discounts.length > 0 && (
             <>
-              <Separator />
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-semibold text-green-600">
-                    {t('categories.sections.discounts', 'Discounts')}
-                  </h3>
-                  <Badge variant="outline" className="text-xs text-green-600 border-green-600">
-                    {itemGroups.discounts.length}
-                  </Badge>
-                </div>
+              <Separator className="my-8" />
+              <div className="space-y-4">
+                <PremiumSectionHeader
+                  icon={Tag}
+                  title={t('categories.sections.discounts', 'Discounts')}
+                  count={itemGroups.discounts.length}
+                  variant="success"
+                />
                 <AnimatePresence mode="popLayout">
                   {itemGroups.discounts.map((item) => (
                     <motion.div
                       key={item.id}
                       layout
                       transition={layoutTransition}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
                     >
-                      <ItemRow
+                      <PremiumItemCard
                         item={item}
                         showOriginBadge={hasMultipleReceipts}
                       />
@@ -189,30 +172,25 @@ export function ItemsList() {
             </>
           )}
 
-          {/* Deposits (Pfand) */}
+          {/* Deposits (Pfand) - Premium Info Variant */}
           {itemGroups.deposits.length > 0 && (
             <>
-              <Separator />
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-semibold text-blue-600">
-                    {t('categories.sections.deposits', 'Deposits (Pfand)')}
-                  </h3>
-                  <Badge variant="outline" className="text-xs text-blue-600 border-blue-600">
-                    {itemGroups.deposits.length}
-                  </Badge>
-                </div>
+              <Separator className="my-8" />
+              <div className="space-y-4">
+                <PremiumSectionHeader
+                  icon={RecycleIcon}
+                  title={t('categories.sections.deposits', 'Deposits (Pfand)')}
+                  count={itemGroups.deposits.length}
+                  variant="info"
+                />
                 <AnimatePresence mode="popLayout">
                   {itemGroups.deposits.map((item) => (
                     <motion.div
                       key={item.id}
                       layout
                       transition={layoutTransition}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
                     >
-                      <ItemRow
+                      <PremiumItemCard
                         item={item}
                         showOriginBadge={hasMultipleReceipts}
                       />
@@ -223,25 +201,25 @@ export function ItemsList() {
             </>
           )}
 
-          {/* Fees */}
+          {/* Fees - Premium Warning Variant */}
           {itemGroups.fees.length > 0 && (
             <>
-              <Separator />
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-orange-600">
-                  {t('categories.sections.fees', 'Fees')}
-                </h3>
+              <Separator className="my-8" />
+              <div className="space-y-4">
+                <PremiumSectionHeader
+                  icon={Coins}
+                  title={t('categories.sections.fees', 'Fees')}
+                  count={itemGroups.fees.length}
+                  variant="warning"
+                />
                 <AnimatePresence mode="popLayout">
                   {itemGroups.fees.map((item) => (
                     <motion.div
                       key={item.id}
                       layout
                       transition={layoutTransition}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
                     >
-                      <ItemRow
+                      <PremiumItemCard
                         item={item}
                         showOriginBadge={hasMultipleReceipts}
                       />
@@ -252,25 +230,25 @@ export function ItemsList() {
             </>
           )}
 
-          {/* Tips */}
+          {/* Tips - Premium Info Variant */}
           {itemGroups.tips.length > 0 && (
             <>
-              <Separator />
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-purple-600">
-                  {t('categories.sections.tips', 'Tips')}
-                </h3>
+              <Separator className="my-8" />
+              <div className="space-y-4">
+                <PremiumSectionHeader
+                  icon={DollarSign}
+                  title={t('categories.sections.tips', 'Tips')}
+                  count={itemGroups.tips.length}
+                  variant="info"
+                />
                 <AnimatePresence mode="popLayout">
                   {itemGroups.tips.map((item) => (
                     <motion.div
                       key={item.id}
                       layout
                       transition={layoutTransition}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
                     >
-                      <ItemRow
+                      <PremiumItemCard
                         item={item}
                         showOriginBadge={hasMultipleReceipts}
                       />
@@ -281,30 +259,24 @@ export function ItemsList() {
             </>
           )}
 
-          {/* Tax (Informational) */}
+          {/* Tax (Informational) - Premium Default with Badge */}
           {itemGroups.tax.length > 0 && (
             <>
-              <Separator />
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-semibold text-muted-foreground">
-                    {t('categories.sections.tax', 'Tax (Included)')}
-                  </h3>
-                  <Badge variant="secondary" className="text-xs">
-                    {t('common.informational', 'Info')}
-                  </Badge>
-                </div>
+              <Separator className="my-8" />
+              <div className="space-y-4">
+                <PremiumSectionHeader
+                  icon={Receipt}
+                  title={t('categories.sections.tax', 'Tax (Included)')}
+                  count={itemGroups.tax.length}
+                />
                 <AnimatePresence mode="popLayout">
                   {itemGroups.tax.map((item) => (
                     <motion.div
                       key={item.id}
                       layout
                       transition={layoutTransition}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
                     >
-                      <ItemRow
+                      <PremiumItemCard
                         item={item}
                         showOriginBadge={hasMultipleReceipts}
                       />

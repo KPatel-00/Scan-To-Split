@@ -1,3 +1,14 @@
+/**
+ * Premium Bill Info Header
+ * 
+ * Design upgrades:
+ * - Glass morphism background with gradient overlay
+ * - Premium typography using typography.display scales
+ * - Enhanced tactile feedback on selector
+ * - Smooth fade-in animation
+ * - Improved visual hierarchy and spacing
+ */
+
 import { useTranslation } from 'react-i18next';
 import { Calendar, Store } from 'lucide-react';
 import { Card } from '../../components/ui/card';
@@ -11,6 +22,8 @@ import {
 import { useStore } from '../../store/useStore';
 import { feedback } from '../../lib/feedback';
 import { motion } from 'framer-motion';
+import { fadeInUp } from '@/lib/motion';
+import { typography } from '@/lib/typography';
 
 interface BillInfoHeaderProps {
   calculatedTotal: number;
@@ -32,18 +45,16 @@ export function BillInfoHeader({ calculatedTotal, itemCount }: BillInfoHeaderPro
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      <Card className="p-6 mb-6 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <motion.div variants={fadeInUp}>
+      <Card className="mb-8 overflow-hidden border border-border/40 bg-gradient-to-br from-primary/5 via-card/50 to-primary/10 p-6 shadow-md backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
+        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           {/* Left Side - Store Info */}
           <div className="flex-1 space-y-4">
-            <div className="flex items-center gap-2">
-              <Store className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-bold">
+            <div className="flex items-center gap-3">
+              <div className="rounded-lg bg-primary/10 p-2">
+                <Store className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className={typography.heading.h3}>
                 {mergedStoreName || t('setup.itemsList.billInfo.storeName')}
               </h3>
             </div>
@@ -55,9 +66,9 @@ export function BillInfoHeader({ calculatedTotal, itemCount }: BillInfoHeaderPro
               </div>
             )}
             
-            {/* Payer Selector */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-muted-foreground">
+            {/* Payer Selector - Premium Styling */}
+            <div className="flex items-center gap-3">
+              <span className="whitespace-nowrap text-sm font-medium text-muted-foreground">
                 {t('setup.itemsList.billInfo.paidBy')}
               </span>
               <Select 
@@ -65,7 +76,7 @@ export function BillInfoHeader({ calculatedTotal, itemCount }: BillInfoHeaderPro
                 onValueChange={handlePayerChange}
               >
                 <SelectTrigger 
-                  className="w-full sm:w-48 h-9" 
+                  className="h-9 w-full border-border/40 bg-card/50 backdrop-blur-sm transition-all hover:border-border hover:bg-card sm:w-48" 
                   aria-label={t('ariaLabels.selectPayer')}
                 >
                   <SelectValue placeholder={t('setup.labels.paidBy')} />
@@ -87,12 +98,12 @@ export function BillInfoHeader({ calculatedTotal, itemCount }: BillInfoHeaderPro
             </div>
           </div>
 
-          {/* Right Side - Totals */}
-          <div className="flex flex-col items-end gap-1">
-            <div className="text-3xl font-bold text-primary">
+          {/* Right Side - Premium Totals Display */}
+          <div className="flex flex-col items-end gap-2 rounded-lg bg-gradient-to-br from-primary/10 to-transparent p-4">
+            <div className={`${typography.display.md} text-primary`}>
               {currency.symbol}{calculatedTotal.toFixed(2)}
             </div>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm font-medium text-muted-foreground">
               {t('setup.itemsList.billInfo.totalItems', { count: itemCount })}
             </div>
           </div>

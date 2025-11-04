@@ -1,3 +1,13 @@
+/**
+ * Premium Participant Card
+ * 
+ * Enhanced with:
+ * - Glass morphism background (bg-card/50 backdrop-blur-sm)
+ * - Smooth hover states (scale 1.015, lift -2px)
+ * - Tactile feedback on interactions
+ * - Reduced motion support
+ */
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '../../../../components/ui/button';
@@ -16,8 +26,9 @@ import { useToast } from '../../../../hooks/useToast';
 import { ToastAction } from '../../../../components/ui/toast';
 import { useStore } from '../../../../store/useStore';
 import { feedback } from '../../../../lib/feedback';
+import { cardTactile, smoothNormal } from '@/lib/motion';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { Participant } from '../../../../store/types';
-import { smoothSlow } from '@/lib/motion/physics';
 
 interface ParticipantCardProps {
   participant: Participant;
@@ -28,6 +39,7 @@ interface ParticipantCardProps {
 export function ParticipantCard({ participant, index, staggerDelay }: ParticipantCardProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const prefersReducedMotion = useReducedMotion();
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
 
   const removeParticipant = useStore((state) => state.removeParticipant);
@@ -75,14 +87,16 @@ export function ParticipantCard({ participant, index, staggerDelay }: Participan
   return (
     <>
       <motion.div
-        className="flex items-center justify-between rounded-lg border p-4 bg-card hover:bg-muted/50 transition-colors"
+        className="group flex items-center justify-between rounded-xl border border-border/40 bg-card/50 p-4 shadow-sm backdrop-blur-sm transition-all duration-300 hover:border-border hover:bg-card/70 hover:shadow-md"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 20, height: 0, marginBottom: 0 }}
         transition={{
-          ...smoothSlow,
+          ...smoothNormal,
           delay: index * staggerDelay,
         }}
+        whileHover={prefersReducedMotion ? undefined : cardTactile.hover}
+        whileTap={prefersReducedMotion ? undefined : cardTactile.tap}
         layout
       >
         <div className="flex items-center gap-4">
