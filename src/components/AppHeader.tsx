@@ -19,6 +19,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { IconButton } from './ui/icon-button';
 import { useStore } from '../store/useStore';
 import { feedback } from '../lib/feedback';
+import { APP_NAME } from '@/lib/constants/app';
 
 export function AppHeader() {
   const { i18n } = useTranslation();
@@ -52,7 +53,7 @@ export function AppHeader() {
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
               <Sparkles className="w-5 h-5 text-primary" />
             </div>
-            <span className="text-xl font-bold tracking-tight">Splitter</span>
+            <span className="text-xl font-bold tracking-tight">{APP_NAME}</span>
           </Link>
 
           <TooltipProvider>

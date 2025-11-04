@@ -6,6 +6,7 @@
 import type { PDFContext, PDFGeneratorResult } from '../types';
 import { addText, addLine, wrapText, formatDate } from '../utils/pdfHelpers';
 import { colors, fontSizes, spacing } from '../styles/pdfStyles';
+import { APP_NAME } from '@/lib/constants/app';
 
 /**
  * Generate PDF header with logo, grand total, and bill sources
@@ -14,11 +15,11 @@ export function generateHeader(context: PDFContext): PDFGeneratorResult {
   const { pdf, margin, pageWidth, contentWidth, grandTotal, currencySymbol, sources } = context;
   let yPosition = context.yPosition;
 
-  // Left: ScanToSplit.ai logo and name
+  // Left: App logo and name
   pdf.setFontSize(fontSizes.title);
   pdf.setFont('helvetica', 'bold');
   pdf.setTextColor(...colors.black);
-  addText(pdf, '📸 ScanToSplit.ai', margin, yPosition);
+  addText(pdf, `📸 ${APP_NAME}`, margin, yPosition);
 
   // Right: Grand Total and Date
   pdf.setFontSize(fontSizes.subheader);

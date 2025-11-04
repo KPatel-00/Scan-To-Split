@@ -17,6 +17,7 @@ import { motion } from 'framer-motion';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { typography } from '../lib/typography';
 import { cn } from '../lib/utils';
+import { APP_NAME } from '@/lib/constants/app';
 
 /**
  * Route Loading Screen - Ultra-Premium full-screen experience
@@ -178,7 +179,7 @@ export function RouteLoadingScreen() {
             typography.display.lg,
             "bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent"
           )}>
-            ScanToSplit.ai
+            {APP_NAME}
           </h1>
           <motion.p
             className={typography.label.sm}

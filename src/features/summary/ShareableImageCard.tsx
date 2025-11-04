@@ -1,4 +1,5 @@
 ﻿import { Participant, Item, Currency, Receipt } from '../../store/useStore';
+import { APP_NAME, APP_WEBSITE } from '@/lib/constants/app';
 
 interface ShareableImageCardProps {
   participants: Participant[];
@@ -184,7 +185,7 @@ export function ShareableImageCard({
             
             {/* App Name */}
             <div style={{ fontSize: '32px', fontWeight: '700', letterSpacing: '-0.02em' }}>
-              ScanToSplit.ai
+              {APP_NAME}
             </div>
           </div>
 
@@ -337,7 +338,7 @@ export function ShareableImageCard({
               fontStyle: 'italic',
             }}
           >
-            scantosplit.ai
+            {APP_WEBSITE.replace('https://', '')}
           </div>
         </div>
       </div>
