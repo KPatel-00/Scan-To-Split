@@ -24,6 +24,7 @@ import { feedback } from '../../lib/feedback';
 import { motion } from 'framer-motion';
 import { fadeInUp } from '@/lib/motion';
 import { typography } from '@/lib/typography';
+import { CurrencySelector } from './CurrencySelector';
 
 interface BillInfoHeaderProps {
   calculatedTotal: number;
@@ -47,6 +48,11 @@ export function BillInfoHeader({ calculatedTotal, itemCount }: BillInfoHeaderPro
   return (
     <motion.div variants={fadeInUp}>
       <Card className="mb-8 overflow-hidden border border-border/40 bg-gradient-to-br from-primary/5 via-card/50 to-primary/10 p-6 shadow-md backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
+        {/* Currency Selector - Top Right */}
+        <div className="mb-4 flex justify-end">
+          <CurrencySelector />
+        </div>
+        
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           {/* Left Side - Store Info */}
           <div className="flex-1 space-y-4">

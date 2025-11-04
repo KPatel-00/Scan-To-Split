@@ -15,10 +15,7 @@
  */
 
 import { useStore, type Item } from '@/store/useStore';
-import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { cardTactile } from '@/lib/motion';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useItemActions } from '@/components/item-row/hooks/useItemActions';
 import { getIconComponent, isNegativePrice as checkNegativePrice } from '@/components/item-row/utils/iconHelpers';
 import { CategoryBadge } from '@/components/item-row/components/CategoryBadge';
@@ -34,7 +31,6 @@ interface PremiumItemCardProps {
 
 export function PremiumItemCard({ item, receiptId, showOriginBadge = false }: PremiumItemCardProps) {
   const currency = useStore((state) => state.currency);
-  const prefersReducedMotion = useReducedMotion();
   
   const {
     isEditing,
@@ -58,27 +54,22 @@ export function PremiumItemCard({ item, receiptId, showOriginBadge = false }: Pr
 
   return (
     <>
-      <motion.div
-        whileHover={prefersReducedMotion ? undefined : cardTactile.hover}
-        whileTap={prefersReducedMotion ? undefined : cardTactile.tap}
+      <div
         className={cn(
           // Premium glass morphism base
           "group flex items-center gap-4 rounded-xl border p-4",
           "bg-card/50 backdrop-blur-sm shadow-sm",
-          "transition-all duration-300",
+          "transition-all duration-200",
           
-          // Hover state - premium elevation
-          "hover:shadow-md hover:border-primary/20",
+          // Hover state - subtle border/shadow only (no lift)
+          "hover:shadow-md hover:border-border/60",
           
           // Negative price variant (discounts, refunds)
           isNegativePrice && "bg-red-50/50 border-red-200 dark:bg-red-950/10 dark:border-red-900/50",
           isNegativePrice && "hover:bg-red-50/70 hover:shadow-red-200/50",
           
           // Editing state
-          isEditing && "ring-2 ring-primary/20 border-primary/40",
-          
-          // Reduced motion fallback
-          prefersReducedMotion && "transition-none"
+          isEditing && "ring-2 ring-primary/20 border-primary/40"
         )}
       >
         <CategoryBadge
@@ -113,7 +104,7 @@ export function PremiumItemCard({ item, receiptId, showOriginBadge = false }: Pr
           onCancelEdit={handleCancelEdit}
           onDelete={() => setShowDeleteDialog(true)}
         />
-      </motion.div>
+      </div>
 
       <DeleteConfirmDialog
         open={showDeleteDialog}

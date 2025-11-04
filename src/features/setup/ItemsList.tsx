@@ -4,7 +4,6 @@ import { Plus, Package, Tag, RecycleIcon, Coins, DollarSign, Receipt } from 'luc
 import { Button } from '../../components/ui/button';
 import { Separator } from '../../components/ui/separator';
 import { useStore } from '../../store/useStore';
-import { CurrencySelector } from './CurrencySelector';
 import { ItemSearchBar } from './ItemSearchBar';
 import { BillInfoHeader } from './BillInfoHeader';
 import { PremiumItemCard } from './components/PremiumItemCard';
@@ -12,7 +11,7 @@ import { PremiumSectionHeader } from './components/PremiumSectionHeader';
 import { AddItemDialog } from '../../components/AddItemDialog';
 import { EmptyState } from '../../components/EmptyState';
 import { motion, AnimatePresence } from 'framer-motion';
-import { staggerContainer, layoutTransition } from '../../lib/motion';
+import { staggerContainer } from '../../lib/motion';
 import { getCategoryName } from '../../lib/taxonomy/migration';
 import { isSpecialLine, isPfandLine, isDiscountLine, isTipLine, isFeeLine } from '../../lib/taxonomy/specialLines';
 
@@ -74,17 +73,6 @@ export function ItemsList() {
 
   return (
     <div className="space-y-6">
-      {/* Currency Selector */}
-      <CurrencySelector />
-
-      {/* Search Bar */}
-      <ItemSearchBar
-        value={searchQuery}
-        onChange={setSearchQuery}
-        showSearchText={true}
-        zIndex={10}
-      />
-
       {/* Bill Info Header */}
       {items.length > 0 && (
         <BillInfoHeader
@@ -92,6 +80,14 @@ export function ItemsList() {
           itemCount={items.length}
         />
       )}
+
+      {/* Collapsible Search Bar */}
+      <ItemSearchBar
+        value={searchQuery}
+        onChange={setSearchQuery}
+        showSearchText={false}
+        zIndex={10}
+      />
 
       {/* Items List or Empty State */}
       {items.length === 0 ? (
@@ -130,11 +126,11 @@ export function ItemsList() {
                 {itemGroups.regular.map((item) => (
                   <motion.div
                     key={item.id}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.15 }}
                     layout
-                    transition={layoutTransition}
                   >
                     <PremiumItemCard
                       item={item}
@@ -161,11 +157,11 @@ export function ItemsList() {
                   {itemGroups.discounts.map((item) => (
                     <motion.div
                       key={item.id}
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
                       layout
-                      transition={layoutTransition}
                     >
                       <PremiumItemCard
                         item={item}
@@ -193,11 +189,11 @@ export function ItemsList() {
                   {itemGroups.deposits.map((item) => (
                     <motion.div
                       key={item.id}
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
                       layout
-                      transition={layoutTransition}
                     >
                       <PremiumItemCard
                         item={item}
@@ -225,11 +221,11 @@ export function ItemsList() {
                   {itemGroups.fees.map((item) => (
                     <motion.div
                       key={item.id}
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
                       layout
-                      transition={layoutTransition}
                     >
                       <PremiumItemCard
                         item={item}
@@ -257,11 +253,11 @@ export function ItemsList() {
                   {itemGroups.tips.map((item) => (
                     <motion.div
                       key={item.id}
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
                       layout
-                      transition={layoutTransition}
                     >
                       <PremiumItemCard
                         item={item}
@@ -288,11 +284,11 @@ export function ItemsList() {
                   {itemGroups.tax.map((item) => (
                     <motion.div
                       key={item.id}
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
                       layout
-                      transition={layoutTransition}
                     >
                       <PremiumItemCard
                         item={item}
