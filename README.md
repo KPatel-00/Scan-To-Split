@@ -158,13 +158,13 @@ VITE_MAX_FILE_SIZE=10485760
 ## 🏗️ Tech Stack
 
 ### Core
-- **React 18.3** - UI library
-- **TypeScript 5.5** - Type safety
-- **Vite 5.4** - Build tool & dev server
+- **React 18.3** - UI library with lazy-loaded routes
+- **TypeScript 5.5** - Strict type safety (zero errors required)
+- **Vite 5.4** - Lightning-fast build tool with manual chunk splitting
 
 ### State Management
-- **Zustand 4.5** - Lightweight state management
-- **localStorage** - Persistent data storage
+- **Zustand 4.5** - 9 domain slices with fine-grained selectors
+- **localStorage** - Persistent data with async hydration pattern
 
 ### UI/UX
 - **Tailwind CSS 3.4** - Utility-first styling
@@ -191,25 +191,37 @@ VITE_MAX_FILE_SIZE=10485760
 
 ```
 src/
-├── components/          # Shared UI components
+├── components/          # Shared UI components (used 3+ features)
 │   ├── ui/             # shadcn/ui primitives
 │   └── ...             # App-specific components
-├── features/           # Feature modules
+├── features/           # Feature modules (feature-based structure)
 │   ├── landing-page/   # Marketing landing
 │   ├── setup/          # Receipt upload & setup
+│   │   ├── components/ # 6 extracted UI components
+│   │   └── hooks/      # 2 business logic hooks
 │   ├── assignment/     # Item assignment flow
 │   └── summary/        # Split summary & export
-├── lib/                # Utilities & helpers
-│   ├── motion/         # Animation presets (42 variants)
+├── lib/                # Pure utilities & helpers
+│   ├── motion/         # Animation presets (43 variants)
 │   ├── taxonomy/       # Category system (50+ codes)
-│   ├── typography.ts   # Responsive text variants
-│   └── sanitize.ts     # XSS prevention
+│   ├── typography.ts   # 40+ responsive text variants
+│   └── sanitize.ts     # XSS prevention with DOMPurify
 ├── store/              # Zustand state management
-│   ├── slices/         # Domain slices (9 total)
-│   └── selectors/      # Computed values
-├── hooks/              # Custom React hooks
-└── pages/              # Route components
+│   ├── slices/         # Domain slices (9 total, ~90 lines each)
+│   ├── selectors/      # Computed values
+│   └── useStore.ts     # Combined store (302 lines)
+├── hooks/              # Global custom React hooks
+└── pages/              # Route components (lazy-loaded)
 ```
+
+### Code Quality Metrics (Nov 4, 2025)
+- **ScanPortal.tsx refactoring**: 658 → 183 lines (72% reduction)
+  - Phase 1: Extracted 6 UI components (367 lines removed)
+  - Phase 2: Extracted 2 business logic hooks (67 lines removed)
+  - Phase 3: Moved to global motion presets (41 lines removed)
+- **Zero breaking changes**: All functionality preserved
+- **TypeScript errors**: 0 in refactored files (36 pre-existing in analytics)
+- **Motion library**: 43 named presets (added `fadeInUp` for common fade+slide pattern)
 
 ---
 
@@ -248,12 +260,13 @@ xl: '1366px'  // Desktops
 
 ### Animation System
 
-42 named motion presets in `src/lib/motion/`:
+43 named motion presets in `src/lib/motion/`:
 - **Tactile**: Button interactions (8 variants)
-- **Layout**: Transitions (6 variants)
+- **Entry**: Content animations (8 variants, including new `fadeInUp`)
+- **Layout**: FLIP transitions (6 variants)
 - **Stagger**: List animations (4 variants)
-- **Spring**: Physics-based (12 variants)
-- **Easing**: Bezier curves (12 variants)
+- **Specialized**: Modals, overlays (12 variants)
+- **Page**: Route transitions (5 variants)
 
 ---
 

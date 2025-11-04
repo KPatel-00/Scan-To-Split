@@ -61,8 +61,9 @@ npm run lint     # Must pass (zero warnings)
 src/
 ├── features/           # Feature modules (landing-page, setup, assignment, summary)
 │   └── [feature]/components/  # Feature-specific components
+│   └── [feature]/hooks/       # Feature-specific business logic
 ├── lib/                # Pure utilities
-│   ├── motion/         # Animation presets (42 named exports)
+│   ├── motion/         # Animation presets (43 named exports - added fadeInUp Nov 4, 2025)
 │   ├── taxonomy/       # Category codes (24 merchandise + 15 grocery + 12 special)
 │   ├── typography.ts   # 40+ responsive text variants
 │   └── sanitize.ts     # XSS prevention with DOMPurify
@@ -72,6 +73,13 @@ src/
 │   └── selectors/      # Computed values (items, receipts, participants)
 └── components/ui/      # shadcn/ui primitives
 ```
+
+**Recent Refactoring (Nov 4, 2025)**:
+- **ScanPortal.tsx**: 658 → 183 lines (72% reduction)
+  - Phase 1: Extracted 6 UI components to `src/features/setup/components/`
+  - Phase 2: Extracted 2 hooks to `src/features/setup/hooks/`
+  - Phase 3: Moved animations to global motion library (`fadeInUp` added)
+- **Zero breaking changes**: All functionality preserved, TypeScript errors remain at 36 (pre-existing in analytics)
 
 ## ⚡ Zustand State Patterns
 
@@ -144,9 +152,9 @@ import { typography } from '@/lib/typography';
 <h1 className="text-4xl md:text-6xl">Hero</h1>
 ```
 
-**Animations** - Named presets from `src/lib/motion/` ONLY (42 presets):
+**Animations** - Named presets from `src/lib/motion/` ONLY (43 presets):
 ```tsx
-import { buttonTactile, layoutTransition, safeTactile } from '@/lib/motion';
+import { buttonTactile, layoutTransition, safeTactile, fadeInUp } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 // ✅ Named preset with accessibility wrapper (preferred)
@@ -154,6 +162,11 @@ const prefersReducedMotion = useReducedMotion();
 <motion.button {...safeTactile(buttonTactile, prefersReducedMotion)}>
   Click me
 </motion.button>
+
+// ✅ Common fade+slide pattern (added Nov 4, 2025)
+<motion.div variants={fadeInUp} initial="hidden" animate="visible">
+  Content
+</motion.div>
 
 // ✅ Alternative: spread interactive presets
 <motion.button {...interactiveButton}>Click me</motion.button>
@@ -381,7 +394,14 @@ console.log('Items only:', items);
 
 ## 🎯 Current Status (Nov 4, 2025)
 
-**Complete**: Motion library (42 presets), Typography system, Tailwind infrastructure, Zustand refactor (9 slices)
+**Complete**: 
+- Motion library (43 presets, added `fadeInUp` for common fade+slide pattern)
+- Typography system (40+ variants)
+- Tailwind infrastructure
+- Zustand refactor (9 slices)
+- ScanPortal.tsx refactoring (72% reduction: 658 → 183 lines)
+
 **Active**: Landing page responsive polish, performance optimization
+
 **Frozen**: Dependencies (no `npm install` without approval)
 
