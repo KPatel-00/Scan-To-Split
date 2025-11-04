@@ -17,7 +17,7 @@
 import { useStore, type Item } from '@/store/useStore';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { cardTactile, fadeInUp } from '@/lib/motion';
+import { cardTactile } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useItemActions } from '@/components/item-row/hooks/useItemActions';
 import { getIconComponent, isNegativePrice as checkNegativePrice } from '@/components/item-row/utils/iconHelpers';
@@ -59,7 +59,6 @@ export function PremiumItemCard({ item, receiptId, showOriginBadge = false }: Pr
   return (
     <>
       <motion.div
-        variants={fadeInUp}
         whileHover={prefersReducedMotion ? undefined : cardTactile.hover}
         whileTap={prefersReducedMotion ? undefined : cardTactile.tap}
         className={cn(

@@ -130,6 +130,9 @@ export function ItemsList() {
                 {itemGroups.regular.map((item) => (
                   <motion.div
                     key={item.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
                     layout
                     transition={layoutTransition}
                   >
@@ -158,6 +161,9 @@ export function ItemsList() {
                   {itemGroups.discounts.map((item) => (
                     <motion.div
                       key={item.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
                       layout
                       transition={layoutTransition}
                     >
@@ -187,6 +193,9 @@ export function ItemsList() {
                   {itemGroups.deposits.map((item) => (
                     <motion.div
                       key={item.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
                       layout
                       transition={layoutTransition}
                     >
@@ -216,6 +225,9 @@ export function ItemsList() {
                   {itemGroups.fees.map((item) => (
                     <motion.div
                       key={item.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
                       layout
                       transition={layoutTransition}
                     >
@@ -245,6 +257,9 @@ export function ItemsList() {
                   {itemGroups.tips.map((item) => (
                     <motion.div
                       key={item.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
                       layout
                       transition={layoutTransition}
                     >
@@ -273,6 +288,9 @@ export function ItemsList() {
                   {itemGroups.tax.map((item) => (
                     <motion.div
                       key={item.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
                       layout
                       transition={layoutTransition}
                     >
