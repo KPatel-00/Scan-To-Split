@@ -102,7 +102,7 @@ export function ItemsList() {
     <div className="space-y-0">
       {/* Unified Card: Bill Header + Items */}
       {items.length > 0 ? (
-        <div className="rounded-xl border border-border/40 bg-card/30 backdrop-blur-sm shadow-sm overflow-hidden">
+        <div className="rounded-xl border border-border/40 bg-card backdrop-blur-sm shadow-sm overflow-hidden">
           {/* Bill Info Header - Clickable to toggle */}
           <button
             onClick={toggleItemsExpanded}
@@ -110,7 +110,7 @@ export function ItemsList() {
             aria-expanded={isItemsExpanded}
             aria-label={isItemsExpanded ? t('setup.itemsList.collapseItems', 'Collapse items') : t('setup.itemsList.expandItems', 'Expand items')}
           >
-            <div className="bg-gradient-to-br from-primary/5 via-card/50 to-primary/10 p-6 hover:from-primary/10 hover:via-card/60 hover:to-primary/15 transition-all duration-300">
+            <div className="bg-gradient-to-br from-primary/5 via-transparent to-primary/10 p-6 hover:from-primary/8 hover:to-primary/12 transition-all duration-300">
               {/* Currency Selector - Top Right */}
               <div className="mb-4 flex justify-end">
                 <CurrencySelector />
@@ -188,7 +188,7 @@ export function ItemsList() {
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="border-t border-border/20 bg-muted/30 px-6 py-3"
+                  className="bg-muted/20 px-6 py-3"
                 >
                   <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                     <Search className="h-3.5 w-3.5" />
@@ -235,9 +235,9 @@ export function ItemsList() {
                     }
                   }
                 }}
-                className="overflow-hidden border-t border-border/20"
+                className="overflow-hidden"
               >
-                <div className="p-6 space-y-6">
+                <div className="bg-muted/5 px-6 pt-4 pb-6 space-y-6">
                   {/* Search Bar - Integrated */}
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
@@ -246,7 +246,7 @@ export function ItemsList() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={t('setup.itemsList.searchPlaceholder')}
-                      className="pl-10 pr-10 bg-background/50"
+                      className="pl-10 pr-10 bg-background/80 border-border/40"
                       aria-label={t('ariaLabels.searchItems')}
                     />
                     <AnimatePresence>
