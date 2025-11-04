@@ -23,9 +23,7 @@ export function Analytics() {
   ];
 
   // Use centralized utility for total calculation
-  const totalSpent = calculateItemsTotal(allItems, {
-    excludeSpecialLines: true,
-  });
+  const totalSpent = calculateItemsTotal(allItems);
 
   return (
     <motion.div
@@ -60,7 +58,7 @@ export function Analytics() {
                     {t('analytics.stats.totalSpent', 'Total Spent')}
                   </p>
                   <p className={typography.stats.medium}>
-                    {formatCurrency(totalSpent, currency)}
+                    {formatCurrency(totalSpent, currency.symbol)}
                   </p>
                 </div>
                 <Receipt className="h-8 w-8 text-muted-foreground" />
@@ -94,7 +92,7 @@ export function Analytics() {
                     {t('analytics.stats.avgPerItem', 'Avg per Item')}
                   </p>
                   <p className={typography.stats.medium}>
-                    {formatCurrency(totalSpent / (allItems.length || 1), currency)}
+                    {formatCurrency(totalSpent / (allItems.length || 1), currency.symbol)}
                   </p>
                 </div>
                 <BarChart3 className="h-8 w-8 text-muted-foreground" />

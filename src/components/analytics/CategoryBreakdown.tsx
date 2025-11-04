@@ -35,7 +35,7 @@ export function CategoryBreakdown({ items, currency }: CategoryBreakdownProps) {
     const summaries: CategorySummary[] = Array.from(categoryMap.values())
       .map((data) => ({
         categoryId: data.categoryId,
-        categoryName: getCategoryName(data.category, i18n.language),
+        categoryName: getCategoryName(data.category, i18n.language as 'en' | 'de'),
         icon: data.category.icon,
         total: data.total,
         percentage: grandTotal > 0 ? (data.total / grandTotal) * 100 : 0,
@@ -93,7 +93,7 @@ export function CategoryBreakdown({ items, currency }: CategoryBreakdownProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold">{formatCurrency(category.total, currency)}</p>
+                    <p className="font-semibold">{formatCurrency(category.total, currency.symbol)}</p>
                     <p className="text-xs text-muted-foreground">
                       {category.percentage.toFixed(1)}%
                     </p>

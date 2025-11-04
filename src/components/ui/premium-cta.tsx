@@ -63,13 +63,13 @@ export interface PremiumCTAProps {
    * Button variant
    * @default 'default'
    */
-  variant?: 'default' | 'secondary' | 'outline' | 'hero';
+  variant?: 'default' | 'secondary' | 'outline';
   
   /**
    * Button size
    * @default 'lg'
    */
-  size?: 'default' | 'sm' | 'lg' | 'xl';
+  size?: 'default' | 'sm' | 'lg';
   
   /**
    * Shimmer effect speed

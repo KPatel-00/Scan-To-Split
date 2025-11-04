@@ -73,7 +73,7 @@ export function SavingsSummary({ items, currency }: SavingsSummaryProps) {
                 </div>
               </div>
               <p className="text-2xl font-bold text-green-600">
-                {formatCurrency(savings.discounts, currency)}
+                {formatCurrency(savings.discounts, currency.symbol)}
               </p>
             </motion.div>
           )}
@@ -99,7 +99,7 @@ export function SavingsSummary({ items, currency }: SavingsSummaryProps) {
                 </div>
               </div>
               <p className="text-2xl font-bold text-blue-600">
-                {formatCurrency(savings.deposits, currency)}
+                {formatCurrency(savings.deposits, currency.symbol)}
               </p>
             </motion.div>
           )}

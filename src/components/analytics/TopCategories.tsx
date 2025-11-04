@@ -21,14 +21,12 @@ export function TopCategories({ items, currency, limit = 5 }: TopCategoriesProps
 
   const topCategories = useMemo(() => {
     // Use centralized aggregation with special lines excluded
-    const categoryMap = aggregateItemsByCategory(items, {
-      excludeSpecialLines: true,
-    });
+    const categoryMap = aggregateItemsByCategory(items);
 
     return Array.from(categoryMap.values())
       .map((data) => ({
         categoryId: data.categoryId,
-        categoryName: getCategoryName(data.category, i18n.language),
+        categoryName: getCategoryName(data.category, i18n.language as 'en' | 'de'),
         icon: data.category.icon,
         total: data.total,
         count: data.count,
@@ -80,7 +78,7 @@ export function TopCategories({ items, currency, limit = 5 }: TopCategoriesProps
                     {category.count} {t('common.items', 'items')}
                   </p>
                 </div>
-                <p className="font-semibold">{formatCurrency(category.total, currency)}</p>
+                <p className="font-semibold">{formatCurrency(category.total, currency.symbol)}</p>
               </motion.div>
             );
           })}
