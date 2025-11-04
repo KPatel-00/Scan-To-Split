@@ -95,47 +95,37 @@ export function ItemsList() {
               itemCount={items.length}
             />
             
-            {/* Expansion Indicator - Premium Style */}
-            <motion.div
-              className="flex items-center justify-center gap-2 -mt-2 mb-4 text-sm text-muted-foreground"
-              initial={false}
-              animate={{
-                opacity: isItemsExpanded ? 0.6 : 1,
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              <AnimatePresence mode="wait">
-                {!isItemsExpanded && (
+            {/* Expansion Indicator - Only show when collapsed */}
+            <AnimatePresence>
+              {!isItemsExpanded && (
+                <motion.div
+                  key="collapsed-hint"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex items-center justify-center gap-2 mt-2 text-sm text-muted-foreground"
+                >
+                  <Search className="h-3.5 w-3.5" />
+                  <span className="font-medium">View & Search Items</span>
                   <motion.div
-                    key="hint"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex items-center gap-2"
+                    animate={{
+                      rotate: 0,
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 200,
+                      damping: 20,
+                    }}
                   >
-                    <Search className="h-3.5 w-3.5" />
-                    <span className="font-medium">View & Search Items</span>
+                    <ChevronDown className="h-5 w-5" />
                   </motion.div>
-                )}
-              </AnimatePresence>
-              
-              <motion.div
-                animate={{
-                  rotate: isItemsExpanded ? 180 : 0,
-                }}
-                transition={{
-                  type: "spring",
-                  stiffness: 200,
-                  damping: 20,
-                }}
-              >
-                <ChevronDown className="h-5 w-5" />
-              </motion.div>
-            </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </button>
 
-          {/* Visual Connection - Only when expanded */}
+          {/* Visual Connection - No gap when expanded */}
           <AnimatePresence>
             {isItemsExpanded && (
               <motion.div
@@ -147,7 +137,7 @@ export function ItemsList() {
                   stiffness: 300,
                   damping: 30,
                 }}
-                className="h-px bg-gradient-to-r from-transparent via-border/40 to-transparent mb-2"
+                className="h-px bg-gradient-to-r from-transparent via-border/40 to-transparent -mt-1"
               />
             )}
           </AnimatePresence>
@@ -222,7 +212,7 @@ export function ItemsList() {
                 variants={staggerContainer}
                 initial="hidden"
                 animate="show"
-                className="rounded-xl border border-x border-border/40 border-t-0 bg-card/30 p-6 backdrop-blur-sm shadow-sm space-y-8"
+                className="rounded-b-xl border-x border-b border-border/40 bg-card/30 px-6 pb-6 pt-4 backdrop-blur-sm shadow-sm space-y-8"
               >
           {/* Regular Items - Premium Section */}
           {itemGroups.regular.length > 0 && (
