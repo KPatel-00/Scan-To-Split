@@ -23,7 +23,7 @@ export function useFilePreview(): UseFilePreviewReturn {
   const { t } = useTranslation();
   const { toast } = useToast();
   const setIsDemoData = useStore((state) => state.setIsDemoData);
-  
+
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [filePreviews, setFilePreviews] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -62,7 +62,7 @@ export function useFilePreview(): UseFilePreviewReturn {
   const handleRemoveFile = (index: number) => {
     // Revoke the URL for the removed file
     URL.revokeObjectURL(filePreviews[index]);
-    
+
     setSelectedFiles(files => files.filter((_, i) => i !== index));
     setFilePreviews(previews => previews.filter((_, i) => i !== index));
   };
@@ -73,19 +73,19 @@ export function useFilePreview(): UseFilePreviewReturn {
 
   const handleStartScanning = async (onFileUpload: (files: FileList | null) => void) => {
     if (selectedFiles.length === 0) return;
-    
+
     setIsProcessing(true);
-    
+
     // Convert File[] to FileList (create a mock FileList)
     const dataTransfer = new DataTransfer();
     selectedFiles.forEach(file => dataTransfer.items.add(file));
-    
+
     await onFileUpload(dataTransfer.files);
-    
-    // Cleanup and reset state
-    filePreviews.forEach(url => URL.revokeObjectURL(url));
-    setSelectedFiles([]);
-    setFilePreviews([]);
+
+    // ✨ REMOVED: Cleanup and reset state
+    // Files are now persisted so they remain if scanning fails/cancels
+    // Cleanup happens on unmount via useEffect
+
     setIsProcessing(false);
   };
 

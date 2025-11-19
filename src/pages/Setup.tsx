@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { AppHeader } from '../components/AppHeader';
 import { AppFooter } from '../components/AppFooter';
 import { Button } from '../components/ui/button';
-import { AIScanAnimation } from '../features/setup/AIScanAnimation';
+// import { AIScanAnimation } from '../features/setup/AIScanAnimation'; // Removed: Embedded in ScanPortal
 import { MultiBillModal } from '../features/setup/MultiBillModal';
 import { ProgressStepper } from '../components/ProgressStepper';
 import { PIIRedactionModal } from '../features/setup/PIIRedactionModal';
@@ -27,16 +27,17 @@ export function Setup() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [itemSearchQuery] = useState('');
-  
+
   // ✨ NEW: State machine for page flow
   const [pageState, setPageState] = useState<PageState>('scanPortal');
-  
+  const [justScanned, setJustScanned] = useState(false); // ✨ NEW: Track if we just finished scanning
+
   const participants = useStore((state) => state.participants);
   const items = useStore((state) => state.items);
   const receipts = useStore((state) => state.receipts);
   const managementMode = useStore((state) => state.managementMode);
   const setLastActivePage = useStore((state) => state.setLastActivePage);
-  
+
   // ✨ REFACTORED: Read scanning state from store
   const isScanning = useStore((state) => state.isScanning);
   const scanFileCount = useStore((state) => state.scanFileCount);
@@ -59,12 +60,23 @@ export function Setup() {
   useEffect(() => {
     if (isScanning) {
       setPageState('scanning');
+    } else if (pageState === 'scanning') {
+      // ✨ FIX: If scanning stops (e.g. error/cancel) and we're still on the scanning page,
+      // go back to the portal.
+      setPageState('scanPortal');
     }
-  }, [isScanning]);
+  }, [isScanning, pageState]);
 
   // ✨ NEW: Handle scan completion (callback for AI animation)
+  // Passed down to ScanPortal -> AIScanAnimation
   const handleScanComplete = () => {
+    // ✨ FIX: Stop scanning state when animation completes successfully
+    useStore.getState().stopScanning();
+    setJustScanned(true); // ✨ Set flag to show skeleton in DataHub
     setPageState('dataHub');
+
+    // Reset flag after a delay to prevent skeleton showing on subsequent visits
+    setTimeout(() => setJustScanned(false), 3000);
   };
 
   // ✨ NEW: Show DataHub if data exists (for returning users)
@@ -84,7 +96,7 @@ export function Setup() {
       });
       return;
     }
-    
+
     if (items.length === 0) {
       feedback.error();
       toast({
@@ -94,7 +106,7 @@ export function Setup() {
       });
       return;
     }
-    
+
     feedback.click();
     setLastActivePage('/assignment');
     navigate('/assignment');
@@ -123,25 +135,21 @@ export function Setup() {
       <main id="main-content" className="min-h-screen bg-background">
         {/* ✨ NEW: State Machine - Gemini-style flow */}
         <AnimatePresence mode="wait">
-          {/* STATE 1: Scan Portal (Hero Upload) */}
-          {pageState === 'scanPortal' && (
+          {/* STATE 1: Scan Portal (Hero Upload) - Kept visible during scanning */}
+          {(pageState === 'scanPortal' || pageState === 'scanning') && (
             <ScanPortal
               key="scanPortal"
               onFileUpload={handleFileUpload}
               managementMode={managementMode}
               hasExistingData={hasData}
               onContinueEditing={showDataHub}
+              isScanning={pageState === 'scanning'}
+              scanFileCount={scanFileCount}
+              onScanComplete={handleScanComplete}
             />
           )}
 
-          {/* STATE 2: AI Scanning Animation */}
-          {pageState === 'scanning' && (
-            <AIScanAnimation
-              key="scanning"
-              fileCount={scanFileCount}
-              onComplete={handleScanComplete}
-            />
-          )}
+
 
           {/* STATE 3: Data Hub (Items + Participants) */}
           {pageState === 'dataHub' && (
@@ -159,6 +167,7 @@ export function Setup() {
                 participants={participants}
                 itemSearchQuery={itemSearchQuery}
                 onBackToUpload={showScanPortal}
+                justScanned={justScanned} // ✨ Pass flag
               />
 
               {/* Navigation Actions */}
@@ -172,8 +181,8 @@ export function Setup() {
                 className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8"
               >
                 <div className="flex flex-col items-center gap-4 border-t border-border pt-8">
-                  <Button 
-                    onClick={handleNext} 
+                  <Button
+                    onClick={handleNext}
                     size="lg"
                     className="min-w-48 shadow-sm transition-all hover:shadow-md"
                   >
@@ -184,8 +193,8 @@ export function Setup() {
                       {participants.length === 0 && items.length === 0
                         ? t('setup.needItemsAndPeople', 'Add at least 1 item and 2 participants to continue.')
                         : participants.length === 0
-                        ? t('setup.needParticipants', 'Add at least 2 participants to continue.')
-                        : t('setup.needItems', 'Add at least 1 item to continue.')}
+                          ? t('setup.needParticipants', 'Add at least 2 participants to continue.')
+                          : t('setup.needItems', 'Add at least 1 item to continue.')}
                     </p>
                   )}
                 </div>

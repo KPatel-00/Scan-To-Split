@@ -1,221 +1,280 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, Search, MapPin, Euro, ScanText, ListChecks } from 'lucide-react';
-import { Skeleton } from '../../components/ui/skeleton';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '../../components/ui/dialog';
+import { CheckCircle, Sparkles, ScanLine, Search, CreditCard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { gentleNormal, bouncySlow } from '@/lib/motion/physics';
+import { cn } from '@/lib/utils';
 
 interface AIScanAnimationProps {
-  fileCount: number;
   onComplete?: () => void;
+  mode?: 'fullscreen' | 'embedded';
+  error?: string | null; // ✨ NEW: Error prop
+  onError?: () => void; // ✨ NEW: Error callback
 }
 
-type ScanState = 'uploading' | 'confirming' | 'processing' | 'rendering' | 'done';
+type ScanState = 'uploading' | 'confirming' | 'processing' | 'complete' | 'done';
 
-const processingMessages = [
-  { icon: Search, key: 'analyzing', text: "Let's see what we have here..." },
-  { icon: MapPin, key: 'lookingForStore', text: 'Looking for store name and bill date...' },
-  { icon: Euro, key: 'detectingCurrency', text: 'Detecting Currency...' },
-  { icon: ScanText, key: 'readingText', text: 'Reading the fine print...', textMultiple: 'Analyzing receipts in parallel...' },
-  { icon: ListChecks, key: 'findingItems', text: 'Finding all the items...' },
+const processingSteps = [
+  { text: "Analyzing receipt structure...", icon: ScanLine },
+  { text: "Identifying items & prices...", icon: Search },
+  { text: "Detecting currency & tax...", icon: CreditCard },
+  { text: "Finalizing details...", icon: Sparkles },
 ];
 
-export function AIScanAnimation({ fileCount, onComplete }: AIScanAnimationProps) {
+export function AIScanAnimation({ onComplete, mode = 'fullscreen', error, onError }: AIScanAnimationProps) {
   const { t } = useTranslation();
   const [state, setState] = useState<ScanState>('uploading');
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [messageIndex, setMessageIndex] = useState(0);
-  const [showLearnMore, setShowLearnMore] = useState(false);
-  const [poppedIcons, setPoppedIcons] = useState<number[]>([]);
+  const [stepIndex, setStepIndex] = useState(0);
 
-  const currentMessage = state === 'processing'
-    ? (fileCount > 1 && processingMessages[messageIndex].key === 'readingText'
-      ? processingMessages[messageIndex].textMultiple
-      : processingMessages[messageIndex].text)
-    : state === 'uploading'
-    ? `Uploading... ${uploadProgress}%`
-    : state === 'confirming'
-    ? 'Got it!'
-    : '';
-
+  // Upload Simulation
   useEffect(() => {
     if (state === 'uploading') {
       const interval = setInterval(() => {
         setUploadProgress((prev) => {
           if (prev >= 100) {
             clearInterval(interval);
-            setTimeout(() => setState('confirming'), 200);
+            setTimeout(() => setState('confirming'), 400);
             return 100;
           }
-          return Math.min(prev + 8, 100);
+          return Math.min(prev + 12, 100); // Faster upload for better UX
         });
-      }, 80);
+      }, 100);
       return () => clearInterval(interval);
     }
   }, [state]);
 
+  // State Transitions
   useEffect(() => {
     if (state === 'confirming') {
-      const timer = setTimeout(() => setState('processing'), 1500);
-      return () => clearTimeout(timer);
-    }
-    if (state === 'processing') {
-      const timer = setTimeout(() => setState('rendering'), 10000);
-      return () => clearTimeout(timer);
-    }
-    if (state === 'rendering') {
       const timer = setTimeout(() => {
-        setState('done');
-        onComplete?.();
-      }, 2000);
+        // ✨ CHECK FOR ERROR: If error exists, stop here and trigger callback
+        if (error) {
+          onError?.();
+          // We don't change state here, the parent will unmount or reset us
+        } else {
+          setState('processing');
+        }
+      }, 1200);
       return () => clearTimeout(timer);
     }
-  }, [state, onComplete]);
-
-  useEffect(() => {
     if (state === 'processing') {
-      const interval = setInterval(() => {
-        setMessageIndex((prev) => {
-          const next = (prev + 1) % processingMessages.length;
-          if (next === processingMessages.length - 1 && poppedIcons.length < 3) {
-            setPoppedIcons((icons) => [...icons, icons.length]);
-          }
-          return next;
-        });
-      }, 2000);
-      return () => clearInterval(interval);
+      // ✨ CHECK FOR ERROR: If error arrives late (during processing), stop immediately
+      if (error) {
+        onError?.();
+        return;
+      }
+
+      // Cycle through processing steps
+      const stepDuration = 2000;
+      const totalDuration = stepDuration * processingSteps.length;
+
+      const stepInterval = setInterval(() => {
+        setStepIndex(prev => (prev + 1) % processingSteps.length);
+      }, stepDuration);
+
+      const timer = setTimeout(() => {
+        clearInterval(stepInterval);
+        setState('complete'); // ✨ Changed from 'rendering' to 'complete'
+      }, totalDuration);
+
+      return () => {
+        clearTimeout(timer);
+        clearInterval(stepInterval);
+      };
     }
-  }, [state, poppedIcons.length]);
+    if (state === 'complete') {
+      const timer = setTimeout(() => {
+        onComplete?.();
+      }, 2000); // Show success message for 2 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [state, onComplete, error, onError]);
+
+  const isEmbedded = mode === 'embedded';
 
   return (
-    <>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-sm">
-        <div className="mx-auto w-full max-w-md px-4">
-          <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">{currentMessage}</div>
-          <AnimatePresence mode="wait">
-            {state === 'uploading' && (
-              <motion.div key="uploading" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={gentleNormal} className="space-y-4">
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold">Uploading Receipt{fileCount > 1 ? 's' : ''}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{t('aiScan.uploading', 'Securing and compressing your images...')}</p>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className={cn(
+        "flex flex-col items-center justify-center overflow-hidden transition-all",
+        isEmbedded
+          ? "relative h-full w-full rounded-xl bg-muted/5"
+          : "fixed inset-0 z-50 bg-background/95 backdrop-blur-sm"
+      )}
+    >
+      <div className={cn(
+        "w-full px-4 transition-all",
+        isEmbedded ? "max-w-sm" : "max-w-md"
+      )}>
+        <AnimatePresence mode="wait">
+
+          {/* STATE 1: UPLOADING */}
+          {state === 'uploading' && (
+            <motion.div
+              key="uploading"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="flex flex-col items-center gap-6"
+            >
+              {/* Upload Icon / Illustration */}
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 ring-1 ring-primary/20">
+                <ScanLine className="h-10 w-10 animate-pulse text-primary" />
+                <motion.div
+                  className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                />
+              </div>
+
+              <div className="w-full space-y-2 text-center">
+                <h3 className="text-lg font-semibold">
+                  {t('aiScan.uploading', 'Uploading Receipt...')}
+                </h3>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                  <motion.div
+                    className="h-full bg-primary"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${uploadProgress}%` }}
+                    transition={{ ease: "linear" }}
+                  />
                 </div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm font-medium">
-                    <span>{t('aiScan.uploadingLabel', 'Uploading...')}</span>
-                    <span className="tabular-nums">{uploadProgress}%</span>
-                  </div>
-                  <div className="h-3 overflow-hidden rounded-full bg-muted ring-1 ring-border">
-                    <motion.div 
-                      className="h-full bg-gradient-to-r from-primary to-primary/80 origin-left" 
-                      initial={{ scaleX: 0 }} 
-                      animate={{ scaleX: uploadProgress / 100 }} 
-                      transition={{ duration: 0.2, ease: 'easeOut' }}
-                      style={{ transformOrigin: 'left' }}
-                    />
-                  </div>
+                <p className="text-xs text-muted-foreground tabular-nums">
+                  {uploadProgress}%
+                </p>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STATE 2: CONFIRMING (Checkmark Pop) */}
+          {state === 'confirming' && (
+            <motion.div
+              key="confirming"
+              className="flex flex-col items-center justify-center gap-4"
+            >
+              <motion.div
+                initial={{ scale: 0, rotate: -45 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15 }}
+              >
+                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
+                  <CheckCircle className="h-12 w-12" strokeWidth={3} />
                 </div>
               </motion.div>
-            )}
-            {state === 'confirming' && (
-              <motion.div key="confirming" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} transition={bouncySlow} className="flex flex-col items-center justify-center gap-4 py-12">
-                <motion.div initial={{ scale: 0 }} animate={{ scale: 1, rotate: [0, 10, -10, 0] }} transition={{ scale: bouncySlow, rotate: { duration: 0.5, delay: 0.2 } }}>
-                  <CheckCircle className="h-16 w-16 text-green-500" strokeWidth={2.5} />
-                </motion.div>
-                <motion.span initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="text-2xl font-bold">
-                  {t('aiScan.gotIt', 'Got it!')}
-                </motion.span>
-              </motion.div>
-            )}
-            {state === 'processing' && (
-              <motion.div key="processing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-8">
-                <div className="relative mx-auto">
-                  <div className="relative mx-auto h-80 w-60 overflow-hidden rounded-xl border-2 border-dashed border-border bg-gradient-to-b from-muted/40 to-muted/20 shadow-2xl">
-                    <motion.div 
-                      className="absolute left-0 right-0 top-0 z-20 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_15px_rgba(var(--primary),0.5)]" 
-                      animate={{ y: ['0%', '32rem'] }} 
-                      transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 1, ease: 'easeInOut' }} 
-                    />
-                    <div className="relative space-y-4 p-6">
-                      <Skeleton className="h-5 w-3/4 animate-pulse" />
-                      <Skeleton className="h-4 w-1/2 animate-pulse" />
-                      <div className="space-y-2 pt-6">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Skeleton key={i} className="h-3 animate-pulse" style={{ width: `${60 + (i * 5)}%` }} />
-                        ))}
+              <motion.h3
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-xl font-bold"
+              >
+                {t('aiScan.gotIt', 'Got it!')}
+              </motion.h3>
+            </motion.div>
+          )}
+
+          {/* STATE 3: PROCESSING (Scanner Beam) */}
+          {state === 'processing' && (
+            <motion.div
+              key="processing"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex flex-col items-center gap-8"
+            >
+              {/* Scanner Visual */}
+              <div className="relative">
+                {/* Receipt Outline */}
+                <div className="relative flex h-48 w-32 flex-col gap-2 rounded-lg border-2 border-dashed border-border bg-card p-3 shadow-sm">
+                  <div className="h-2 w-1/2 rounded bg-muted" />
+                  <div className="h-2 w-3/4 rounded bg-muted" />
+                  <div className="mt-4 space-y-2">
+                    {[1, 2, 3, 4].map(i => (
+                      <div key={i} className="flex justify-between">
+                        <div className="h-1.5 w-12 rounded bg-muted/50" />
+                        <div className="h-1.5 w-6 rounded bg-muted/50" />
                       </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="min-h-[80px]">
-                  <AnimatePresence mode="wait">
-                    {processingMessages.map((msg, idx) => (
-                      idx === messageIndex && (
-                        <motion.div key={msg.key} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4 }} className="flex flex-col items-center justify-center gap-4 text-center">
-                          <motion.div animate={{ scale: [1, 1.1, 1], rotate: msg.key === 'analyzing' ? [0, 5, -5, 0] : 0 }} transition={{ duration: 1.5, repeat: Infinity, repeatType: 'loop' }}>
-                            <msg.icon className="h-12 w-12 text-primary" strokeWidth={1.5} />
-                          </motion.div>
-                          <p className="text-lg font-medium">
-                            {fileCount > 1 && msg.key === 'readingText'
-                              ? t(`aiScan.${msg.key}Multiple`, msg.textMultiple || '')
-                              : t(`aiScan.${msg.key}`, msg.text)}
-                          </p>
-                        </motion.div>
-                      )
                     ))}
-                  </AnimatePresence>
+                  </div>
+                  <div className="mt-auto flex justify-between border-t border-dashed border-border pt-2">
+                    <div className="h-2 w-8 rounded bg-muted" />
+                    <div className="h-2 w-8 rounded bg-muted" />
+                  </div>
                 </div>
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} className="rounded-lg border bg-muted/30 p-4 text-center">
-                  <p className="text-xs text-muted-foreground">
-                    {t('aiScan.privacyCaption', 'For your privacy, we automatically try to hide credit card numbers.')}{' '}
-                    <button onClick={() => setShowLearnMore(true)} className="font-medium underline decoration-primary/30 underline-offset-2 transition-colors hover:text-foreground hover:decoration-primary">
-                      {t('aiScan.learnMore', 'Learn More')}
-                    </button>
-                  </p>
+
+                {/* Laser Beam */}
+                <motion.div
+                  className="absolute -left-4 -right-4 top-0 h-1 bg-primary shadow-[0_0_20px_rgba(var(--primary),0.5)]"
+                  animate={{ top: ["0%", "100%", "0%"] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                >
+                  <div className="absolute -bottom-4 left-0 right-0 h-8 bg-gradient-to-b from-primary/20 to-transparent" />
                 </motion.div>
-              </motion.div>
-            )}
-            {state === 'rendering' && (
-              <motion.div key="rendering" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold">{t('aiScan.rendering', 'Almost there...')}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{t('aiScan.renderingDesc', 'Preparing your items')}</p>
+              </div>
+
+              {/* Processing Text */}
+              <div className="h-12 text-center">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={stepIndex}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="flex items-center gap-2 text-sm font-medium text-muted-foreground"
+                  >
+                    {(() => {
+                      const StepIcon = processingSteps[stepIndex].icon;
+                      return <StepIcon className="h-4 w-4" />;
+                    })()}
+                    {processingSteps[stepIndex].text}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STATE 4: COMPLETE (Success Message) */}
+          {state === 'complete' && (
+            <motion.div
+              key="complete"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex flex-col items-center justify-center gap-6 text-center"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
+              >
+                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
+                  <CheckCircle className="h-12 w-12" strokeWidth={3} />
                 </div>
-                <div className="space-y-4">
-                  {[1, 2, 3, 4].map((i) => (
-                    <motion.div key={i} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} className="flex items-center gap-4 rounded-lg border bg-card p-4">
-                      <Skeleton className="h-10 w-10 rounded-full" />
-                      <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-3/4" />
-                        <Skeleton className="h-3 w-1/2" />
-                      </div>
-                      <Skeleton className="h-6 w-16" />
-                    </motion.div>
-                  ))}
-                </div>
               </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </motion.div>
-      <Dialog open={showLearnMore} onOpenChange={setShowLearnMore}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>{t('aiScan.learnMoreTitle', 'How We Protect Your Privacy')}</DialogTitle>
-            <DialogDescription className="space-y-4 pt-4 text-sm">
-              <p>{t('aiScan.learnMoreDesc1', 'Our app does its best to find and hide sensitive data before scanning.')}</p>
-              <p className="font-medium">{t('aiScan.learnMoreDesc2', 'For 100% privacy, we recommend you cover any sensitive numbers before taking a picture.')}</p>
-              <p className="text-xs text-muted-foreground">{t('aiScan.learnMoreDesc3', 'This transfers final responsibility to you in a transparent way, ensuring maximum security.')}</p>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-    </>
+
+              <div className="space-y-2">
+                <motion.h3
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-2xl font-bold tracking-tight"
+                >
+                  {t('aiScan.complete', 'Analysis Complete')}
+                </motion.h3>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-muted-foreground"
+                >
+                  {t('aiScan.redirecting', "Let's move forward...")}
+                </motion.p>
+              </div>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+      </div>
+    </motion.div>
   );
 }

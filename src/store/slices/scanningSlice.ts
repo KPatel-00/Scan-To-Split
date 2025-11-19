@@ -9,25 +9,29 @@ export interface ScanningSlice {
   // Scanning state
   isScanning: boolean;
   scanFileCount: number;
-  
+
   // PII detection state
   piiDetections: PIIDetection[];
   pendingFiles: File[];
-  
+
   // Scanned receipts data (before confirmation)
   scannedReceiptsData: any[]; // TODO: Type this properly based on scanReceiptsClient return type
-  
+
+  // Error state
+  scanError: string | null;
+
   // Actions
   setIsScanning: (isScanning: boolean) => void;
   setScanFileCount: (count: number) => void;
   setPIIDetections: (detections: PIIDetection[]) => void;
   setPendingFiles: (files: File[]) => void;
   setScannedReceiptsData: (data: any[]) => void;
-  
+  setScanError: (error: string | null) => void;
+
   // Compound actions
   startScanning: (fileCount: number) => void;
   stopScanning: () => void;
-  
+
   // Reset scanning state (after successful scan or cancel)
   resetScanningState: () => void;
 }
@@ -39,6 +43,7 @@ export const createScanningSlice: StateCreator<ScanningSlice, [], [], ScanningSl
   piiDetections: [],
   pendingFiles: [],
   scannedReceiptsData: [],
+  scanError: null,
 
   // Basic setters
   setIsScanning: (isScanning) => set({ isScanning }),
@@ -46,12 +51,14 @@ export const createScanningSlice: StateCreator<ScanningSlice, [], [], ScanningSl
   setPIIDetections: (detections) => set({ piiDetections: detections }),
   setPendingFiles: (files) => set({ pendingFiles: files }),
   setScannedReceiptsData: (data) => set({ scannedReceiptsData: data }),
+  setScanError: (error) => set({ scanError: error }),
 
   // Compound actions for convenience
   startScanning: (fileCount) =>
     set({
       isScanning: true,
       scanFileCount: fileCount,
+      scanError: null,
     }),
 
   stopScanning: () =>
@@ -68,5 +75,6 @@ export const createScanningSlice: StateCreator<ScanningSlice, [], [], ScanningSl
       piiDetections: [],
       pendingFiles: [],
       scannedReceiptsData: [],
+      scanError: null,
     }),
 });

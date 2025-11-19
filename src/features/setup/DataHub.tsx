@@ -15,12 +15,13 @@
  * - Participants management with groups
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ShoppingCart, Users, ArrowLeft } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import { Button } from '../../components/ui/button';
+import { Skeleton } from '../../components/ui/skeleton'; // ✨ NEW: Import Skeleton
 import { ItemsManagementSection } from './ItemsManagementSection';
 import { ParticipantsSection } from './ParticipantsSection';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -36,6 +37,7 @@ interface DataHubProps {
   participants: any[];
   itemSearchQuery: string;
   onBackToUpload?: () => void;
+  justScanned?: boolean; // ✨ NEW: Prop to trigger initial loading state
 }
 
 export function DataHub({
@@ -45,13 +47,25 @@ export function DataHub({
   participants,
   itemSearchQuery,
   onBackToUpload,
+  justScanned = false,
 }: DataHubProps) {
   const { t } = useTranslation();
   const isMobile = useMediaQuery('(max-width: 767px)');
   const [activeTab, setActiveTab] = useState('items');
+  const [isLoading, setIsLoading] = useState(justScanned); // ✨ NEW: Local loading state
 
-  const itemsCount = managementMode === 'merged' 
-    ? items.length 
+  // ✨ NEW: Effect to turn off loading after delay
+  useEffect(() => {
+    if (justScanned) {
+      const timer = setTimeout(() => setIsLoading(false), 1500);
+      return () => clearTimeout(timer);
+    } else {
+      setIsLoading(false);
+    }
+  }, [justScanned]);
+
+  const itemsCount = managementMode === 'merged'
+    ? items.length
     : receipts.reduce((sum, r) => sum + r.items.length, 0);
 
   return (
@@ -100,15 +114,15 @@ export function DataHub({
         <motion.div variants={fadeInUp}>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="mb-6 grid w-full grid-cols-2 bg-muted/50 p-1">
-              <TabsTrigger 
-                value="items" 
+              <TabsTrigger
+                value="items"
                 className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
               >
                 <ShoppingCart className="h-4 w-4" />
                 {t('setup.dataHub.itemsTab', 'Items')} ({itemsCount})
               </TabsTrigger>
-              <TabsTrigger 
-                value="people" 
+              <TabsTrigger
+                value="people"
                 className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
               >
                 <Users className="h-4 w-4" />
@@ -117,12 +131,28 @@ export function DataHub({
             </TabsList>
 
             <TabsContent value="items" className="mt-0 space-y-6">
-              <ItemsManagementSection
-                managementMode={managementMode}
-                items={items}
-                receipts={receipts}
-                itemSearchQuery={itemSearchQuery}
-              />
+              {isLoading ? (
+                // ✨ NEW: Skeleton Loading for Items
+                <div className="space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="flex items-center gap-4 rounded-lg border p-4">
+                      <Skeleton className="h-10 w-10 rounded-full" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-3 w-1/2" />
+                      </div>
+                      <Skeleton className="h-6 w-16" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <ItemsManagementSection
+                  managementMode={managementMode}
+                  items={items}
+                  receipts={receipts}
+                  itemSearchQuery={itemSearchQuery}
+                />
+              )}
             </TabsContent>
 
             <TabsContent value="people" className="mt-0">
@@ -138,12 +168,32 @@ export function DataHub({
             className="md:col-span-2"
             variants={fadeInUp}
           >
-            <ItemsManagementSection
-              managementMode={managementMode}
-              items={items}
-              receipts={receipts}
-              itemSearchQuery={itemSearchQuery}
-            />
+            {isLoading ? (
+              // ✨ NEW: Skeleton Loading for Items (Desktop)
+              <div className="space-y-4 rounded-xl border bg-card p-6 shadow-sm">
+                <div className="mb-6 flex items-center justify-between">
+                  <Skeleton className="h-8 w-48" />
+                  <Skeleton className="h-9 w-32" />
+                </div>
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex items-center gap-4 rounded-lg border p-4">
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-3/4" />
+                      <Skeleton className="h-3 w-1/2" />
+                    </div>
+                    <Skeleton className="h-6 w-16" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <ItemsManagementSection
+                managementMode={managementMode}
+                items={items}
+                receipts={receipts}
+                itemSearchQuery={itemSearchQuery}
+              />
+            )}
           </motion.div>
 
           {/* Participants Section (1/3 width, sticky) */}

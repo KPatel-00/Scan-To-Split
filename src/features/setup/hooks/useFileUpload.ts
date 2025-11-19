@@ -14,25 +14,26 @@ import { useStore } from '../../../store/useStore';
 export function useFileUpload() {
   const { t } = useTranslation();
   const { toast } = useToast();
-  
+
   // ✨ REFACTORED: Read from scanning slice (for internal use)
   const piiDetections = useStore((state) => state.piiDetections);
   const pendingFiles = useStore((state) => state.pendingFiles);
   const scannedReceiptsData = useStore((state) => state.scannedReceiptsData);
-  
+
   // ✨ REFACTORED: Use store actions instead of local setState
   const startScanning = useStore((state) => state.startScanning);
   const stopScanning = useStore((state) => state.stopScanning);
   const setPIIDetections = useStore((state) => state.setPIIDetections);
   const setPendingFiles = useStore((state) => state.setPendingFiles);
   const setScannedReceiptsData = useStore((state) => state.setScannedReceiptsData);
-  
+  const setScanError = useStore((state) => state.setScanError);
+
   // Modal actions
   const openPIIRedactionModal = useStore((state) => state.openPIIRedactionModal);
   const closePIIRedactionModal = useStore((state) => state.closePIIRedactionModal);
   const openMultiBillModal = useStore((state) => state.openMultiBillModal);
   const closeMultiBillModal = useStore((state) => state.closeMultiBillModal);
-  
+
   // Domain actions
   const addItem = useStore((state) => state.addItem);
   const addScannedData = useStore((state) => state.addScannedData);
@@ -41,12 +42,12 @@ export function useFileUpload() {
 
   const handleFileUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
-    
+
     feedback.click();
-    
+
     const fileCount = Math.min(files.length, 3);
     const fileArray = Array.from(files).slice(0, fileCount);
-    
+
     try {
       // Step 1: Compress images (Pre-Upload Compression)
       const compressionOptions = {
@@ -55,15 +56,15 @@ export function useFileUpload() {
         useWebWorker: true,
         fileType: 'image/jpeg',
       };
-      
+
       const compressedFiles = await Promise.all(
         fileArray.map((file) => imageCompression(file, compressionOptions))
       );
-      
+
       // Step 2: PII Detection (Intelligent Sanitization Flow)
       const detections = await detectPIIBatch(compressedFiles);
       const hasPII = detections.some((d) => d.found);
-      
+
       if (hasPII) {
         // Case B: PII Found - Show redaction modal
         setPIIDetections(detections);
@@ -91,7 +92,7 @@ export function useFileUpload() {
           createRedactedImage(pendingFiles[index], detection.patterns)
         )
       );
-      
+
       closePIIRedactionModal(); // ✨ Store action
       await uploadAndScan(redactedFiles);
     } catch (error) {
@@ -112,20 +113,16 @@ export function useFileUpload() {
   const uploadAndScan = async (files: File[]) => {
     startScanning(files.length); // ✨ Compound store action
     feedback.scan();
-    
+
     try {
       // Use client-side AI scanning (Vite version)
       const result = await scanReceiptsClient(files);
 
       // Handle errors
       if (!result.success) {
-        feedback.error();
-        toast({
-          title: t('messages.error', 'Scan Failed'),
-          description: result.message || 'Could not scan receipt',
-          variant: 'destructive',
-        });
-        stopScanning(); // ✨ Store action
+        // ✨ Store error state instead of stopping immediately
+        // This allows the UI to finish the "Got it" animation before showing the error
+        setScanError(result.message || 'Could not scan receipt');
         return;
       }
 
@@ -172,33 +169,25 @@ export function useFileUpload() {
         }
       }
     } catch (error: any) {
-      feedback.error();
-      
-      // **Blueprint Requirement: Graceful Error Handling**
-      // User-friendly error messages with retry hints
+      // ✨ Store error state instead of stopping immediately
       let errorMessage = t('messages.scanErrorDesc');
-      
+
       if (error.message?.includes('network')) {
         errorMessage = t('messages.networkError', 'Network error. Please check your connection and try again.');
       } else if (error.message?.includes('timeout')) {
         errorMessage = t('messages.timeoutError', 'Request timed out. The receipt may be too large. Try a smaller image.');
       }
-      
-      toast({
-        title: t('messages.scanError'),
-        description: errorMessage,
-        variant: 'destructive',
-        duration: 8000,
-      });
-    } finally {
-      setTimeout(() => stopScanning(), 500); // ✨ Small delay for UX + store action
+
+      setScanError(errorMessage);
     }
+    // ✨ REMOVED finally block that stopped scanning
+    // Scanning stop is now handled by the UI (ScanPortal) after animation completes or error is shown
   };
 
   const handleMultiBillConfirm = (mode: 'merged' | 'separate') => {
     feedback.click();
     setManagementMode(mode);
-    
+
     if (mode === 'merged') {
       // Merged mode: Add all items to single items array
       let totalItemsAdded = 0;
@@ -213,7 +202,7 @@ export function useFileUpload() {
           totalItemsAdded++;
         });
       });
-      
+
       toast({
         title: t('messages.scanComplete'),
         description: t('messages.itemsAdded', { count: totalItemsAdded }),
@@ -221,7 +210,7 @@ export function useFileUpload() {
     } else {
       // Separate mode: Add data to receipts array
       addScannedData(scannedReceiptsData);
-      
+
       toast({
         title: t('messages.scanComplete'),
         description: t('setup.multiBill.modal.separate.confirmed', 'Managing {{count}} bills separately', {
@@ -229,7 +218,7 @@ export function useFileUpload() {
         }),
       });
     }
-    
+
     closeMultiBillModal(); // ✨ Store action
     setScannedReceiptsData([]); // Clear scanned data after confirmation
   };

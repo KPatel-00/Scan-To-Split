@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { AddItemDialog } from '../../components/AddItemDialog';
 import { useStore } from '../../store/useStore';
 import { feedback } from '../../lib/feedback';
+import { useToast } from '@/hooks/useToast';
 import { typography } from '../../lib/typography';
 import { staggerContainer, fadeInUp } from '@/lib/motion';
 
@@ -25,6 +26,7 @@ import { AlternativeActions } from './components/AlternativeActions';
 import { UploadDropzone } from './components/UploadDropzone';
 import { FilePreviewList } from './components/FilePreviewList';
 import { ManualEntryBox } from './components/ManualEntryBox';
+import { AIScanAnimation } from './AIScanAnimation';
 
 // ✨ NEW: Business logic hooks
 import { useFilePreview } from './hooks/useFilePreview';
@@ -35,13 +37,19 @@ interface ScanPortalProps {
   managementMode: 'merged' | 'separate';
   hasExistingData?: boolean;
   onContinueEditing?: () => void;
+  isScanning?: boolean;
+  scanFileCount?: number;
+  onScanComplete?: () => void;
 }
 
-export function ScanPortal({ 
-  onFileUpload, 
+export function ScanPortal({
+  onFileUpload,
   managementMode,
   hasExistingData = false,
   onContinueEditing,
+  isScanning = false,
+  scanFileCount = 0,
+  onScanComplete,
 }: ScanPortalProps) {
   const { t } = useTranslation();
   const items = useStore((state) => state.items);
@@ -81,6 +89,26 @@ export function ScanPortal({
 
   const handleTryDemo = () => {
     loadDemoData(onContinueEditing);
+  };
+
+  // ✨ NEW: Read error state from store
+  const scanError = useStore((state) => state.scanError);
+  const setScanError = useStore((state) => state.setScanError);
+  const stopScanning = useStore((state) => state.stopScanning);
+  const { toast } = useToast();
+
+  const handleScanError = () => {
+    if (scanError) {
+      feedback.error();
+      toast({
+        title: t('messages.scanError', 'Scan Failed'),
+        description: scanError,
+        variant: 'destructive',
+        duration: 5000,
+      });
+      setScanError(null); // Clear error
+      stopScanning(); // Return to upload mode
+    }
   };
 
   return (
@@ -146,8 +174,23 @@ export function ScanPortal({
           aria-label="Upload receipt images"
         />
 
-        {/* Upload Dropzone with File Preview OR Manual Text Entry */}
-        {selectedFiles.length === 0 ? (
+        {/* Upload Dropzone with File Preview OR Manual Text Entry OR Scanning Animation */}
+        {isScanning ? (
+          <motion.div
+            key="scanning"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="h-[400px] w-full"
+          >
+            <AIScanAnimation
+              mode="embedded"
+              onComplete={onScanComplete}
+              error={scanError} // ✨ Pass error state
+              onError={handleScanError} // ✨ Handle error callback
+            />
+          </motion.div>
+        ) : selectedFiles.length === 0 ? (
           <AnimatePresence mode="wait">
             {inputMode === 'upload' ? (
               /* Upload Mode - Dropzone */
