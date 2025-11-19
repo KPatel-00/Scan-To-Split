@@ -1,695 +1,728 @@
-# Part 3: Setup Page Experience (Descriptive)
+# Part 3: Setup Flow Experience (Descriptive) - ACTUAL IMPLEMENTATION
 
-**What This Covers**: The receipt upload journey and data review - where AI magic happens and users prepare their bill for splitting.
+**What This Covers**: The bill input journey - from clicking "Get Started" to having items and participants ready for assignment.
 
----
+**Status**: ✅ Verified against real code (Setup.tsx, ScanPortal.tsx, DataHub.tsx examined)
 
-## 🚀 The Setup Flow: Two Acts
-
-### Act 1: ScanPortal (Upload Receipt)
-User uploads receipt photo → AI scans it (3-5 seconds) → Data extracted
-
-### Act 2: DataHub (Review & Edit)
-User reviews items → Adds participants → Makes corrections → Continues to assignment
+**Last Updated**: Based on code audit - 3-state machine, actual component structure documented
 
 ---
 
-## 📸 Act 1: ScanPortal - The Upload Experience
+## 🎬 The Journey Overview
 
-### When You First Arrive (/setup page)
+When a user clicks "Get Started" from the landing page, they enter a **3-state flow** designed like Gemini AI's interface - clean, focused, and intelligent.
 
-**The Scene**: Clean, spacious page with one focus - upload your receipt.
-
-```
-┌────────────────────────────────────────────────────┐
-│                                                    │
-│                                                    │
-│          📁 Ready to Split a Bill?                │  ← Welcome headline
-│                                                    │
-│     ┌────────────────────────────────┐           │
-│     │                                 │           │
-│     │          ☁️  Upload            │  ← Upload card
-│     │                                 │     (glass effect)
-│     │  Drop receipt image here       │
-│     │  or click to browse            │
-│     │                                 │
-│     └────────────────────────────────┘           │
-│                                                    │
-│    ⚡ Fast    🔒 Secure    🌍 Any Language       │  ← Trust badges
-│                                                    │
-└────────────────────────────────────────────────────┘
-```
-
-### Upload Card (The Star)
-
-**Visual Design**:
-- **Size**: 600px wide max, 400px tall
-- **Background**: Subtle gradient (blue/3% → purple/2%)
-- **Border**: Dashed line (2px, blue/30% opacity)
-- **Border Style**: Dashes (8px dash, 4px gap)
-- **Border Radius**: 24px (very rounded)
-- **Padding**: 64px all around
-
-**Center Content**:
-- **Icon**: Cloud with up arrow (☁️↑) at 48px size
-- **Text**: "Drop receipt image here" (20px, semi-bold)
-- **Subtext**: "or click to browse" (14px, muted gray)
-- **Hidden Input**: File picker (accepts images only)
-
-**States & Animations**:
-
-**1. Default State** (waiting for file):
-- Border: Dashed blue/30%
-- Background: Subtle gradient
-- Icon: Gray (#9CA3AF)
-- **Feel**: Empty canvas, inviting
-
-**2. Hover State** (mouse over):
-- Border: Solid blue/60% (dashes disappear)
-- Background: Blue/5% (brighter)
-- Icon: Blue (#4F8EF7)
-- Cursor: Pointer
-- Transition: 0.2s smooth
-- **Feel**: "Yes, drop it here!"
-
-**3. Drag Over State** (file being dragged):
-- Border: Solid blue/100% (thick, 3px)
-- Background: Blue/10% (bright)
-- Icon: Scales to 56px
-- Gentle scale pulse (1.0 → 1.05 → 1.0)
-- **Feel**: "Drop now!"
-
-**4. Uploading State** (after file dropped):
-- Border disappears
-- Progress bar appears
-- Loading text: "Scanning receipt..."
-- **Feel**: "Working on it..."
-
-### Progress Bar (During AI Scan)
+### The 3 States
 
 ```
-┌────────────────────────────────────────────────────┐
-│                                                    │
-│             🔍 Scanning Receipt...                │  ← Status text
-│                                                    │
-│     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━     │  ← Progress bar
-│     ████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░     │     (60% full)
-│                                                    │
-│              Extracting items...                  │  ← Sub-status
-│                                                    │
-└────────────────────────────────────────────────────┘
+STATE 1: ScanPortal          STATE 2: Scanning           STATE 3: DataHub
+┌──────────────┐            ┌──────────────┐           ┌──────────────┐
+│              │            │              │           │              │
+│  📸 Upload   │  ──────>   │  ⏳ AI       │  ──────>  │  ✅ Review   │
+│  Receipt     │            │  Processing  │           │  & Edit      │
+│              │            │              │           │              │
+└──────────────┘            └──────────────┘           └──────────────┘
 ```
 
-**Visual Design**:
-- **Bar**: Full width, 8px height
-- **Fill Color**: Blue gradient (light → dark)
-- **Background**: Gray/10%
-- **Border Radius**: 4px (slightly rounded)
-- **Animation**: Smooth fill (0 → 100% over 3-5 seconds)
+**State 1: ScanPortal** - Upload or manually enter bill data
+**State 2: AI Scanning** - Lottie animation while AI extracts items
+**State 3: DataHub** - Review items, add participants, verify data
 
-**Status Messages** (change during scan):
-- 0-20%: "Analyzing image..."
-- 20-40%: "Detecting text..."
-- 40-60%: "Extracting items..."
-- 60-80%: "Identifying prices..."
-- 80-100%: "Finalizing..."
-
-**Leading Edge Effect**:
-- Shimmer animation on fill edge
-- Light sweep effect (left to right)
-- **Feel**: Like water filling a glass - smooth, continuous
-
-### Trust Badges (Below Upload Card)
-
-Three small badges in a row:
-
-**Badge 1: Speed**
-```
-⚡ AI extracts items in seconds
-```
-
-**Badge 2: Security**
-```
-🔒 Images deleted after processing
-```
-
-**Badge 3: Compatibility**
-```
-🌍 Works with any language
-```
-
-**Visual Style**:
-- Each badge: Icon + Text
-- Icon size: 16px
-- Text: 14px, gray
-- Gap between badges: 24px
-- Centered horizontally
-
-**Purpose**: Addresses common concerns BEFORE user uploads
-- Concern: "Will this be slow?" → ⚡ Fast
-- Concern: "Is my data safe?" → 🔒 Secure
-- Concern: "Will it work with my receipt?" → 🌍 Universal
-
-### Returning User Banner (If Data Exists)
-
-If user has unfinished bill, show this ABOVE upload card:
-
-```
-┌────────────────────────────────────────────────────┐
-│  ℹ️  You have an unfinished bill from earlier.    │
-│                                                    │
-│  [Continue Editing]  [Start Fresh]                │
-└────────────────────────────────────────────────────┘
-```
-
-**Visual Design**:
-- **Background**: Info blue (blue/10%)
-- **Border**: Blue/30% left border (4px thick)
-- **Icon**: Info symbol (ℹ️)
-- **Buttons**: Side by side
-  - "Continue Editing": Primary (blue)
-  - "Start Fresh": Secondary (white with border)
-
-**Animation**: Slides down from top (0.5s) on page load
-
-**Purpose**: Prevent accidental data loss, show we remember
+**Design Philosophy**: "Portal" style (Gemini inspiration) - each state fills the screen, no clutter, clear focus.
 
 ---
 
-## 📊 Act 2: DataHub - The Review Experience
+## 🎯 Top of Page: Progress Stepper
 
-### The Big Reveal (After AI Scan Completes)
+Before entering any state, you see a **progress indicator** that sticks to the top of the page.
 
-**Page Transition**: ScanPortal fades out (0.3s) → DataHub fades in (0.5s)
-
-**What User Sees** (new layout):
+### What It Looks Like
 
 ```
-┌────────────────────────────────────────────────────┐
-│                                                    │
-│  [← Back to Upload]                 [Continue →]  │  ← Action buttons
-│                                                    │
-│  ┌──────────────────────────────────────────┐    │
-│  │  🏪 Store Name      📅 Nov 18, 2025      │    │  ← Bill info
-│  │                                           │    │
-│  │  Total: $127.45                          │    │
-│  └──────────────────────────────────────────┘    │
-│                                                    │
-│  ┌──────────────────────────────────────────┐    │
-│  │  📦 Items (12)                   [+ Add] │    │  ← Items section
-│  │                                           │    │
-│  │  [Item Card 1]                           │    │
-│  │  [Item Card 2]                           │    │
-│  │  [Item Card 3]                           │    │
-│  │  ...                                      │    │
-│  └──────────────────────────────────────────┘    │
-│                                                    │
-│  ┌──────────────────────────────────────────┐    │
-│  │  👥 Participants (0)         [+ Add]     │    │  ← Participants
-│  │                                           │    │
-│  │  Add people to split this bill           │    │
-│  └──────────────────────────────────────────┘    │
-│                                                    │
-└────────────────────────────────────────────────────┘
-```
-
-### Bill Information Card (Top Section)
-
-```
-┌─────────────────────────────────────────────────┐
-│                                                 │
-│  🏪 Olive Garden          📅 Nov 18, 2025      │  ← Store + Date
-│  📍 123 Main St, City                          │  ← Address (if detected)
-│                                                 │
-│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  │  ← Divider line
-│                                                 │
-│  Subtotal              $110.00                 │  ← Breakdown
-│  Tax (8.5%)             $9.35                  │
-│  Tip (15%)             $16.50                  │
-│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  │
-│  Total                $127.45                  │  ← Big total (32px)
-│                                                 │
-└─────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│  1. Setup ●━━━━━━━━━━ 2. Assign ━━━━━━━━━━ 3. Done │
+└─────────────────────────────────────────────────────┘
 ```
 
 **Visual Design**:
-- **Background**: Gradient (card/50% → primary/5%)
-- **Glass effect**: Backdrop blur, semi-transparent
-- **Padding**: 32px
-- **Border**: 1px, border/40%
-- **Border radius**: 16px
-- **Shadow**: Soft drop shadow
+- **Step 1 (Setup)**: Filled circle (●) + bold text - you are here
+- **Step 2 (Assign)**: Empty circle (○) + gray text - next step
+- **Step 3 (Done)**: Empty circle (○) + gray text - final step
+- **Progress line**: Filled portion shows how far you've come
 
-**Entrance Animation**:
-1. Fades in from 0% → 100% opacity
-2. Scales from 0.95 → 1.0
-3. Duration: 0.5s with spring easing
-4. Slight upward movement (20px)
+**Behavior**:
+- **Sticky positioning** - stays at top when scrolling
+- **Frosted glass background** - semi-transparent with backdrop blur
+- **Responsive** - Shows step numbers on mobile, full text on desktop
 
-**Info Icons**:
-- Store: 🏪 (20px emoji)
-- Date: 📅 (20px emoji)
-- Location: 📍 (20px emoji)
+**Why It's Important**:
+- ✅ User always knows where they are (no feeling lost)
+- ✅ Sets expectations (3 steps total)
+- ✅ Provides sense of progress (motivation to complete)
 
-**Numbers**:
-- Subtotal/Tax/Tip: 18px, regular weight
-- Total: 32px, bold, blue color
-- Right-aligned for easy scanning
+---
 
-### Items Section (The Main Content)
+## 📍 STATE 1: ScanPortal - The Upload Interface
+
+**File**: `ScanPortal.tsx` (183 lines after Nov 4 refactoring)
+
+**Status**: ✅ Fully implemented with 6 sub-components
+
+### What You See on First Visit
+
+```
+┌──────────────────────────────────────────────────────┐
+│                                                      │
+│           Let's get this sorted.                     │
+│                                                      │
+│  Scan or upload up to 3 receipts to begin.          │
+│       The AI will do the heavy lifting.             │
+│                                                      │
+│  ┌────────────────────────────────────────────────┐ │
+│  │                                                │ │
+│  │         📸  Drag & Drop Files Here             │ │
+│  │                                                │ │
+│  │         or click to browse                     │ │
+│  │                                                │ │
+│  │    (Images up to 10MB, .jpg .png .heic)       │ │
+│  │                                                │ │
+│  └────────────────────────────────────────────────┘ │
+│                                                      │
+│       [Try Demo Bill]  [Manual Entry Instead]       │
+│                                                      │
+│  ✨ AI-powered   🔒 Private   ⚡ Multi-bill         │
+│                                                      │
+└──────────────────────────────────────────────────────┘
+```
+
+### Component Breakdown
+
+**1. Hero Header** (UploadDropzone.tsx):
+- **Headline**: "Let's get this sorted." (typography.display.md - large, bold)
+- **Subtitle**: "Scan or upload up to 3 receipts to begin. The AI will do the heavy lifting." (typography.body.lgMuted - gray)
+- **Animation**: Fades in with upward slide (fadeInUp preset)
+- **Feel**: Confident, friendly, not overwhelming
+
+**2. Upload Dropzone** (UploadDropzone.tsx):
+- **Component**: `<UploadDropzone>` - Large dashed border rectangle
+- **Icon**: Camera or upload icon (large, 48px)
+- **Primary Text**: "Drag & Drop Files Here"
+- **Secondary Text**: "or click to browse"
+- **File Types**: Shows accepted formats (images, HEIC)
+- **Size Limit**: Shows "up to 10MB"
+
+**Drag-and-Drop Behavior**:
+- **On drag over**: Border becomes solid, background highlights (blue tint)
+- **On drop**: Files appear in preview list immediately
+- **On click**: Opens native file picker
+- **Mobile**: Only click (no drag-and-drop on mobile)
+
+**3. Alternative Actions** (AlternativeActions.tsx):
+- **Two Buttons** below dropzone:
+  - **"Try Demo Bill"** - Loads sample data (grocery store receipt)
+  - **"Manual Entry Instead"** - Toggles to text-based entry
+
+**Design**:
+- Secondary button style (outline, not filled)
+- Icons on left (beaker for demo, keyboard for manual)
+- Side-by-side on desktop, stacked on mobile
+
+**4. Feature Highlights** (FeatureHighlights.tsx):
+- **Three Icons + Text** at bottom:
+  - ✨ "AI-powered" - extracts items automatically
+  - 🔒 "Private" - your data stays on your device
+  - ⚡ "Multi-bill" - handle multiple receipts at once
+
+**Purpose**: Reassures users, highlights benefits, builds trust
+
+**Visual**: Small, subtle, always visible (not attention-grabbing)
+
+### Returning User Scenario
+
+**Scenario**: User already has items/participants from previous session
+
+**What Changes**:
+- **Banner Appears** at top (ReturningUserBanner.tsx):
+  ```
+  ┌──────────────────────────────────────────┐
+  │  Welcome back! You have:                 │
+  │  • 12 items from 1 receipt               │
+  │  • 4 participants                        │
+  │                                          │
+  │  [Continue Editing]    [Clear & Restart] │
+  └──────────────────────────────────────────┘
+  ```
+
+**Buttons**:
+- **"Continue Editing"** - Jumps directly to STATE 3 (DataHub)
+- **"Clear & Restart"** - Clears localStorage, resets to empty state
+
+**Design**:
+- Light blue background (info color)
+- Not dismissible (must choose action)
+- Prominent (hard to miss)
+
+### File Selection Experience
+
+**User Action**: Clicks dropzone or drops files
+
+**What Happens**:
+
+1. **File Validation** (immediate):
+   - Checks file type (must be image or .heic)
+   - Checks file size (must be < 10MB)
+   - Invalid files: Shows error toast, not added
+   - Valid files: Added to preview list
+
+2. **File Preview List Appears** (FilePreviewList.tsx):
+   ```
+   ┌────────────────────────────────────────────┐
+   │  📄 receipt_1.jpg        🗑️ Remove        │
+   │  ▒▒▒▒▒ (Thumbnail)                        │
+   │  2.4 MB                                    │
+   ├────────────────────────────────────────────┤
+   │  📄 receipt_2.png        🗑️ Remove        │
+   │  ▒▒▒▒▒ (Thumbnail)                        │
+   │  1.8 MB                                    │
+   ├────────────────────────────────────────────┤
+   │  [+ Add More Files]   [Start Scanning →]  │
+   └────────────────────────────────────────────┘
+   ```
+
+**Each File Card Shows**:
+- Filename (truncated if long)
+- Thumbnail preview (actual image, compressed)
+- File size
+- Remove button (trash icon)
+
+**Bottom Actions**:
+- **"Add More Files"** - Opens file picker again (max 3 total)
+- **"Start Scanning →"** - Primary button, proceeds to STATE 2
+
+**Animations**:
+- Cards fade in with stagger (0.1s delay each)
+- Smooth layout shift when removing files
+- Thumbnail loads with fade (no jarring pop-in)
+
+### Manual Entry Mode (Alternative)
+
+**User Action**: Clicks "Manual Entry Instead"
+
+**What Changes**:
+- Upload dropzone **swaps out** (AnimatePresence transition)
+- **Text area appears** (ManualEntryBox.tsx):
+
+```
+┌──────────────────────────────────────────────┐
+│  Paste your receipt text below:             │
+│                                              │
+│  ┌────────────────────────────────────────┐ │
+│  │ Store: Trader Joe's                    │ │
+│  │ Date: 2024-11-01                       │ │
+│  │                                        │ │
+│  │ Milk - $3.99                           │ │
+│  │ Bread - $2.50                          │ │
+│  │ ...                                    │ │
+│  │                                        │ │
+│  └────────────────────────────────────────┘ │
+│                                              │
+│  [Parse Text →]                              │
+│                                              │
+│  [Back to Upload]                            │
+└──────────────────────────────────────────────┘
+```
+
+**Features**:
+- Large text area (200px tall, resizable)
+- Placeholder text shows expected format
+- **"Parse Text →"** button attempts to extract items
+- **"Back to Upload"** toggles back to dropzone
+
+**Current Status**: 🚧 Parsing logic has TODO comment (not fully implemented)
+
+---
+
+## ⏳ STATE 2: AI Scanning Animation
+
+**File**: `AIScanAnimation.tsx`
+
+**Status**: ✅ Fully implemented with Lottie animation
+
+**Trigger**: User clicks "Start Scanning" from file preview
+
+### What You See
+
+```
+┌──────────────────────────────────────────────┐
+│                                              │
+│                                              │
+│           [Lottie Animation]                 │
+│        (Receipt being scanned)               │
+│                                              │
+│         Scanning 2 receipts...               │
+│                                              │
+│            ●●●○○○○○                          │
+│         (Progress Dots)                      │
+│                                              │
+└──────────────────────────────────────────────┘
+```
+
+### The Animation
+
+**Visual**: Lottie animation (JSON-based, vector animation)
+- **Source**: `src/animations/hero-scan-receipt.json`
+- **Library**: `lottie-react` package (2.4.1)
+- **Style**: Minimalist receipt with scanning line moving down
+- **Loop**: Yes (repeats while scanning)
+- **Size**: ~300px on desktop, scales on mobile
+
+**Text Below Animation**:
+- "Scanning {count} receipt(s)..." (dynamic count)
+- Shows plural/singular correctly
+
+**Progress Indicator**:
+- Row of dots (●●●○○○○○)
+- Filled dots = progress
+- Animates filling from left to right
+
+### What's Happening Behind the Scenes
+
+**Real Actions**:
+1. Images compressed via `browser-image-compression` library
+2. Sent to Google Gemini 1.5 Flash API
+3. AI extracts:
+   - Store name, date
+   - Item names, prices, quantities
+   - Tax, tip amounts
+   - Category codes (GROC.DAIRY, ALCO.BEER, etc.)
+4. Results sanitized with `sanitizeInput()` (XSS prevention)
+5. Stored in Zustand state
+
+**Duration**:
+- Typically 2-5 seconds per receipt
+- Depends on image size and API response time
+- Minimum 2 seconds shown (even if faster, for UX)
+
+### Transition to STATE 3
+
+**Trigger**: AI scanning completes successfully
+
+**What Happens**:
+1. Lottie animation fades out
+2. DataHub fades in (0.3s transition)
+3. User now sees extracted data
+
+**Error Handling**:
+- If API fails: Error toast appears, returns to STATE 1
+- If partial success: Shows what was extracted, toast warns about errors
+- User can always return to upload and try again
+
+---
+
+## ✅ STATE 3: DataHub - Review & Edit
+
+**File**: `DataHub.tsx` (163 lines)
+
+**Status**: ✅ Premium upgrade completed Nov 5, 2025
+
+**Purpose**: Review extracted items, add/edit participants, verify bill details
+
+### The Layout Structure
+
+**Desktop** (≥768px):
+```
+┌──────────────────────────────────────────────────────────┐
+│  ← Back to Upload                                        │
+│                                                          │
+│              Your Bill Details                           │
+│       Review items and add participants                  │
+│                                                          │
+│  ┌─────────────────┐      ┌────────────────────────────┐│
+│  │                 │      │                            ││
+│  │  ITEMS SECTION  │      │   PARTICIPANTS SECTION     ││
+│  │                 │      │                            ││
+│  │  • 12 items     │      │  • Add people              ││
+│  │  • Edit prices  │      │  • Set who paid            ││
+│  │  • Categories   │      │  • Create groups           ││
+│  │                 │      │                            ││
+│  └─────────────────┘      └────────────────────────────┘│
+│                                                          │
+│              [Assign Items →]                            │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Mobile** (<768px):
+```
+┌──────────────────────────────────────────┐
+│  ← Back to Upload                        │
+│                                          │
+│          Your Bill Details               │
+│   Review items and add participants      │
+│                                          │
+│  ┌──────────────────────────────────────┐│
+│  │ [Items] | [Participants]             ││ (Tabs)
+│  └──────────────────────────────────────┘│
+│                                          │
+│  ┌──────────────────────────────────────┐│
+│  │                                      ││
+│  │  (Active Tab Content)                ││
+│  │                                      ││
+│  └──────────────────────────────────────┘│
+│                                          │
+│          [Assign Items →]                │
+│                                          │
+└──────────────────────────────────────────┘
+```
+
+### Header Section
+
+**Back Button**:
+- Ghost style (transparent, becomes visible on hover)
+- Arrow icon (←) + "Back to Upload"
+- Returns to STATE 1 (ScanPortal)
+- Preserves current data (doesn't clear)
+
+**Title & Subtitle**:
+- Title: "Your Bill Details" (typography.display.md)
+- Subtitle: "Review items and add participants" (typography.body.lgMuted)
+- Centered text, generous spacing (py-12)
+
+### Items Section (Left Side / First Tab)
+
+**Component**: `ItemsManagementSection.tsx`
+
+**What You See**:
+
+```
+┌──────────────────────────────────────────┐
+│  📦 Items (12)                           │
+│                                          │
+│  [Search items...]          [+ Add Item] │
+│                                          │
+│  ┌────────────────────────────────────┐  │
+│  │ 🥛 Whole Milk                      │  │
+│  │ GROC.DAIRY • $3.99 × 1             │  │
+│  │ [Edit] [Delete]                    │  │
+│  └────────────────────────────────────┘  │
+│                                          │
+│  ┌────────────────────────────────────┐  │
+│  │ 🍞 Sourdough Bread                 │  │
+│  │ GROC.BAKERY • $5.50 × 1            │  │
+│  │ [Edit] [Delete]                    │  │
+│  └────────────────────────────────────┘  │
+│                                          │
+│  (12 items total)                        │
+│                                          │
+│  Subtotal: $45.67                        │
+│  Tax: $3.65                              │
+│  Tip: $8.00                              │
+│  ──────────────                          │
+│  Total: $57.32                           │
+└──────────────────────────────────────────┘
+```
+
+**Section Header** (PremiumSectionHeader.tsx):
+- Icon: Package (📦)
+- Title: "Items"
+- Count badge: Number of items in blue circle
+- Premium typography from `typography.ts`
+
+**Search Bar**:
+- Icon: Search magnifying glass
+- Placeholder: "Search items..."
+- Live filtering (updates as you type)
+- Debounced input (waits 300ms before filtering)
+
+**Add Item Button**:
+- Secondary style (outline)
+- Plus icon (+)
+- Opens dialog for manual item entry
+
+**Item Cards** (PremiumItemCard.tsx):
+- **Glass morphism design**: `bg-card/50 backdrop-blur-sm`
+- **Hover effect**: Border brightens, shadow increases (cardTactile)
+- **Layout**:
+  - Top: Item emoji + name (bold)
+  - Middle: Category badge + price × quantity
+  - Bottom: Edit and Delete icon buttons
+
+**Bill Summary** (bottom of list):
+- Subtotal, Tax, Tip shown in lighter text
+- Grand total in bold, larger text
+- Horizontal line separator above total
+
+**Separate Bills Mode** (if multiple receipts):
+- Groups items by receipt in accordion sections
+- Each section shows store name + date
+- Expand/collapse per receipt
+
+### Participants Section (Right Side / Second Tab)
+
+**Component**: `ParticipantsSection.tsx`
+
+**What You See**:
+
+```
+┌──────────────────────────────────────────┐
+│  👥 Participants (4)                     │
+│                                          │
+│  [Search people...]      [+ Add Person]  │
+│                                          │
+│  ┌────────────────────────────────────┐  │
+│  │ 👤 Alice                           │  │
+│  │ email@example.com                  │  │
+│  │ [Edit] [Delete]                    │  │
+│  └────────────────────────────────────┘  │
+│                                          │
+│  ┌────────────────────────────────────┐  │
+│  │ 👤 Bob                             │  │
+│  │ No email                           │  │
+│  │ [Edit] [Delete] [Set as Payer]     │  │
+│  └────────────────────────────────────┘  │
+│                                          │
+│  (4 participants total)                  │
+│                                          │
+│  💡 Add at least 2 people to continue    │
+└──────────────────────────────────────────┘
+```
 
 **Section Header**:
+- Icon: Users (👥)
+- Title: "Participants"
+- Count badge: Number of people
 
-```
-┌─────────────────────────────────────────────────┐
-│  📦 Items (12)                        [+ Add]   │  ← Header bar
-└─────────────────────────────────────────────────┘
-```
+**Add Person Button**:
+- Primary style (filled)
+- Plus icon (+)
+- Opens dialog for name/email entry
 
-**Visual Design**:
-- **Background**: Glass morphism (muted/30%)
-- **Padding**: 24px
-- **Border radius**: 12px (top only)
-- **Left**: Icon + count (📦 Items (12))
-- **Right**: Add button (white with border)
+**Participant Cards** (ParticipantCard.tsx):
+- **Avatar circle**: First initial or emoji
+- **Name**: Bold, larger text
+- **Email/Phone**: Optional, smaller gray text
+- **Payer Badge**: "Paid Bill" badge if person paid (merged mode)
+- **Hover effect**: Subtle scale + shadow (cardTactile)
 
-**Add Button**:
-- Size: 36px height
-- Icon: Plus symbol (+)
-- Hover: Grows 5%, border glows blue
-- Click: Opens "Add Item" dialog
+**Validation Message**:
+- Shows if < 2 participants
+- Light bulb icon (💡)
+- Text: "Add at least 2 people to continue"
+- Yellow/amber tint (warning color)
 
-### Individual Item Cards
+### Navigation Actions (Bottom)
 
-Each item appears as a card:
+**Button**: "Assign Items →"
+- Large size, full width on mobile
+- Primary color (blue)
+- Arrow icon on right
+- Disabled if:
+  - No items exist
+  - Less than 2 participants
+- Enabled state: Hover effect with shadow
 
-```
-┌─────────────────────────────────────────────────┐
-│  🍝  Caesar Salad                     $12.99   │  ← Category emoji + name + price
-│      Food > Salad                              │  ← Category breadcrumb
-│                                          [⋮]   │  ← Menu (edit/delete)
-└─────────────────────────────────────────────────┘
-```
-
-**Visual Design**:
-- **Background**: Card/50% (glass effect)
-- **Padding**: 16px
-- **Border**: 1px, border/40%
-- **Border radius**: 12px
-- **Shadow**: Soft (0 2px 4px)
-- **Gap between cards**: 12px
-
-**Layout**:
-- **Left**: Category emoji (32px) in circle background
-  - Circle: 48px diameter
-  - Background: Primary/10%
-  - Emoji centered
-  
-- **Middle**: Item details
-  - **Name**: 18px, semi-bold, truncated if long
-  - **Category**: 14px, muted gray
-  
-- **Right**: Price + menu
-  - **Price**: 24px, bold, blue
-  - **Menu**: Three dots (⋮), opens dropdown
-
-**Hover Effect**:
-- Card lifts 2% (scale 1.02)
-- Shadow deepens
-- Border glows slightly
-- Transition: 0.2s
-
-**Tap Effect** (mobile):
-- Card shrinks 1% (scale 0.99)
-- Springs back
-- Tactile feedback
-
-**Category Emojis** (Examples):
-- Food: 🍝
-- Drinks: 🥤
-- Alcohol: 🍺
-- Dessert: 🍰
-- Grocery: 🛒
-- Dairy: 🥛
-
-### Item Card Menu (Three Dots)
-
-**Click three dots** → Dropdown opens:
-
-```
-┌─────────────┐
-│  ✏️ Edit     │  ← Edit item details
-│  🗑️ Delete   │  ← Remove item
-│  📋 Duplicate│  ← Copy this item
-└─────────────┘
-```
-
-**Visual Design**:
-- **Background**: White (light) / Dark (#1A1A1A) in dark mode
-- **Border**: 1px, border color
-- **Shadow**: Deep (0 4px 16px rgba(0,0,0,0.15))
-- **Border radius**: 8px
-- **Each option**: 36px height, 16px padding
-
-**Hover on option**:
-- Background: Muted/10%
-- Cursor: Pointer
-
-**Click behavior**:
-- **Edit**: Opens dialog pre-filled with item data
-- **Delete**: Shows confirmation ("Delete Caesar Salad?")
-- **Duplicate**: Creates copy immediately
-
-### Entrance Animation (Items List)
-
-**Staggered Appearance**:
-1. Section header fades in first (0.3s)
-2. Item 1 slides up + fades in (0s delay)
-3. Item 2 slides up + fades in (0.1s delay)
-4. Item 3 slides up + fades in (0.2s delay)
-5. ... continues for all items
-
-**Effect**: Like dealing cards - smooth, rhythmic, professional
-
-**Total time**: If 12 items → 1.2s for all to appear
-
-### Add Item Dialog (Click "+ Add" Button)
-
-**Dialog Appearance**:
-- Slides up from bottom (mobile)
-- Fades in from center (desktop)
-- Backdrop: Dark overlay (80% opacity)
-- Duration: 0.3s
-
-**Dialog Content**:
-
-```
-┌─────────────────────────────────────────────────┐
-│  ✖️  Add Item                                   │  ← Header with close
-│                                                 │
-│  Item Name                                      │  ← Label
-│  [                                    ]         │  ← Input field
-│                                                 │
-│  Price                                          │
-│  [$                                  ]          │  ← $ prefix
-│                                                 │
-│  Category                                       │
-│  [Select category ▼]                           │  ← Dropdown
-│                                                 │
-│  [Cancel]                  [Add Item]          │  ← Buttons
-└─────────────────────────────────────────────────┘
-```
-
-**Visual Design**:
-- **Size**: 500px wide, auto height
-- **Background**: Card background (glass effect)
-- **Padding**: 32px
-- **Border radius**: 16px
-- **Shadow**: Deep (0 8px 24px)
-
-**Input Fields**:
-- **Height**: 48px
-- **Border**: 1px gray, becomes blue on focus
-- **Border radius**: 8px
-- **Padding**: 12px
-- **Font**: 16px (prevents zoom on mobile)
-
-**Category Dropdown**:
-- Shows all 51 categories
-- Searchable (type to filter)
-- Icons for each category
-- Scrollable list (max 300px height)
-
-**Add Button**:
-- **Disabled** until name + price filled
-- **Gray** when disabled
-- **Blue** when ready
-- **Hover**: Grows 5%
-
-### Participants Section (Bottom)
-
-**Empty State** (no participants yet):
-
-```
-┌─────────────────────────────────────────────────┐
-│  👥 Participants (0)                  [+ Add]   │
-│                                                 │
-│        👤 Add people to split this bill        │  ← Empty state
-│           [+ Add Participant]                  │  ← Big add button
-│                                                 │
-└─────────────────────────────────────────────────┘
-```
-
-**Visual Design**:
-- **Background**: Gradient (muted/30% → transparent)
-- **Glass effect**: Backdrop blur
-- **Padding**: 48px
-- **Text**: Center-aligned, muted gray
-- **Empty icon**: Large (48px), gray
-
-**Filled State** (with participants):
-
-```
-┌─────────────────────────────────────────────────┐
-│  👥 Participants (3)                  [+ Add]   │
-│                                                 │
-│  [Participant Card: Sarah]                     │
-│  [Participant Card: Mike]                      │
-│  [Participant Card: Anna]                      │
-│                                                 │
-└─────────────────────────────────────────────────┘
-```
-
-### Participant Card
-
-```
-┌─────────────────────────────────────────────────┐
-│  👤 S    Sarah Johnson                   [⋮]   │  ← Avatar + name + menu
-│          sarah@email.com                        │  ← Email (optional)
-└─────────────────────────────────────────────────┘
-```
-
-**Visual Design**:
-- **Avatar**: 
-  - Circle: 48px diameter
-  - Initial: "S" in white text (24px)
-  - Background: Random color (from palette)
-    - Blues: #4F8EF7, #2563EB
-    - Greens: #10B981, #059669
-    - Purples: #8B5CF6, #7C3AED
-    - Pinks: #EC4899, #DB2777
-  
-- **Name**: 18px, semi-bold
-- **Email**: 14px, muted (if provided)
-- **Menu**: Three dots → Edit / Delete
-
-**Hover Effect**:
-- Lifts slightly (translateY: -2px)
-- Border glows in avatar color
-- Transition: 0.2s
-
-**Color Assignment**:
-- Each participant gets unique color
-- Used later in assignment chips/badges
-- Helps visual distinction
-
-### Add Participant Dialog
-
-**Dialog Content**:
-
-```
-┌─────────────────────────────────────────────────┐
-│  ✖️  Add Participant                            │
-│                                                 │
-│  Name *                                         │
-│  [                                    ]         │
-│                                                 │
-│  Email (optional)                               │
-│  [                                    ]         │
-│                                                 │
-│  [Cancel]              [Add Participant]       │
-└─────────────────────────────────────────────────┘
-```
-
-**Validation**:
-- Name required (red border if empty)
-- Email validated (must be valid format if provided)
-- Add button disabled until valid
-
-**Entrance**:
-- Same slide-up animation as Add Item dialog
-- Auto-focus on Name field
-
-### Continue Button (Bottom Right)
-
-```
-┌─────────────────────────┐
-│  Continue to Assignment │
-│            →            │
-└─────────────────────────┘
-```
-
-**Visual Design**:
-- **Size**: Large (56px height)
-- **Color**: Blue (primary)
-- **Position**: Fixed bottom-right (sticky)
-- **Shadow**: Deep (floats above content)
-- **Arrow**: Right arrow symbol (→)
-
-**States**:
-
-**Disabled** (requirements not met):
-- Gray color
-- 50% opacity
-- Cursor: not-allowed
-- Tooltip: "Add at least 1 item and 2 participants"
-
-**Enabled** (ready to continue):
-- Blue color
-- Full opacity
-- Gentle pulse animation
-- Hover: Grows 5%
-- Click: Navigate to /assignment with transition
-
-**Requirements to Enable**:
-- ✅ At least 1 item in list
-- ✅ At least 2 participants added
-- ✅ All items have valid prices
-
-### Special Lines (Tax, Tip, Discounts)
-
-**Collapsible Section** (below items):
-
-```
-┌─────────────────────────────────────────────────┐
-│  💰 Special Lines (3)                    [▼]   │  ← Collapsible header
-│                                                 │
-│  [Show when expanded:]                         │
-│                                                 │
-│  💵 Tax (8.5%)                         $9.35   │
-│  💵 Tip (15%)                         $16.50   │
-│  🏷️ Discount (Happy Hour)            -$5.00   │
-│                                                 │
-└─────────────────────────────────────────────────┘
-```
-
-**Visual Design**:
-- **Header**: Same style as Items section
-- **Default**: Collapsed (saves space)
-- **Expand icon**: Rotates 180° when opened
-- **Special line cards**: Smaller than item cards (32px height)
-
-**Why Separate?**:
-- Not assigned to individuals (split proportionally)
-- Less frequently edited
-- Keeps main items list clean
+**Validation Feedback**:
+- If button disabled, shows helper text below:
+  - "Add at least 1 item and 2 participants to continue."
+  - Specific message depending on what's missing
 
 ---
 
-## 🎭 User Experience Flow (Step by Step)
+## 🎨 Design Language Throughout Setup
 
-### Step 1: Arrive at Setup Page
-**See**: Empty upload card  
-**Feel**: Clean, inviting, clear what to do  
-**Action**: Click or drag receipt image
+### Glass Morphism (Premium Upgrade Nov 5, 2025)
 
-### Step 2: Upload Receipt
-**See**: File picker OR drag-drop zone activates  
-**Feel**: Responsive, gives visual feedback  
-**Action**: Select/drop image file
+**Visual Style**:
+- Cards: `bg-card/50` (50% opacity) + `backdrop-blur-sm`
+- Borders: `border-border/40` (40% opacity)
+- Shadows: Subtle, soft (`shadow-sm` on Tailwind)
 
-### Step 3: AI Scanning
-**See**: Progress bar, status messages  
-**Feel**: Something is happening, be patient  
-**Duration**: 3-5 seconds  
-**Action**: Wait (can't interact during this)
+**Effect**: Cards feel "floating" above background, frosted glass look
 
-### Step 4: Review Items
-**See**: 12 item cards appear in stagger  
-**Feel**: Impressive, AI extracted everything!  
-**Action**: Check for errors, edit if needed
+### Tactile Feedback
 
-### Step 5: Add Participants
-**See**: Empty participants section  
-**Feel**: Next logical step, can't continue without  
-**Action**: Click "+ Add Participant", enter names
+**Interactive Elements**:
+- Buttons: Scale on hover (1.02x), press (0.98x)
+- Cards: Slight elevation on hover
+- Icons: Brighten on hover
+- All animations: Smooth spring physics (stiffness: 300)
 
-### Step 6: Verify & Continue
-**See**: Continue button enables (no longer gray)  
-**Feel**: Ready to move forward  
-**Action**: Click "Continue to Assignment"
+**Accessibility**:
+- **useReducedMotion()** hook checks OS preference
+- If user prefers reduced motion: Animations skip
+- **safeTactile()** wrapper disables hover/tap effects
 
-### Step 7: Page Transition
-**See**: DataHub fades out, Assignment fades in  
-**Feel**: Smooth, directional, clear progress  
-**Arrives**: /assignment page
+### Typography Hierarchy
 
----
+**Levels Used**:
+- Page title: `typography.display.md` (48-60px)
+- Section headers: `typography.heading.h3` (24-30px)
+- Body text: `typography.body.lg` (18px)
+- Labels: `typography.body.sm` (14px)
+- Muted text: `typography.body.lgMuted` (18px, gray)
 
-## 💡 Why The Setup Page Works
+**Consistency**: All text uses named presets from `typography.ts`
 
-### Psychology Principles
+### Spacing System
 
-**1. Progressive Disclosure**:
-- Show upload first (simple)
-- Reveal complexity after (items, participants)
-- User never overwhelmed
+**Padding/Margins**:
+- Page container: `py-12` (48px vertical padding)
+- Section gaps: `space-y-8` (32px between sections)
+- Card padding: `p-6` (24px inside cards)
+- Element gaps: `gap-4` (16px between buttons)
 
-**2. Instant Gratification**:
-- AI scan completes in seconds
-- Immediate visible result (items appear)
-- Feels productive quickly
+**Philosophy**: Generous whitespace = premium feel
 
-**3. Clear Progress**:
-- Two distinct stages (upload → review)
-- Continue button only enables when ready
-- User always knows what's next
+### Animation Timing
 
-### Design Principles
+**Stagger Pattern**:
+- Container fades in: 0s
+- First child: 0.1s delay
+- Second child: 0.2s delay
+- Third child: 0.3s delay
+- (0.1s increment per child)
 
-**1. Hierarchy**:
-- Bill info at top (context)
-- Items in middle (main content)
-- Participants at bottom (supporting)
-
-**2. Feedback**:
-- Every action has visible response
-- Hover states on clickable elements
-- Success states (checkmarks, green)
-- Error states (red borders, helpful text)
-
-**3. Forgiveness**:
-- Undo available for delete actions
-- Edit anytime (not locked after continue)
-- "Back to Upload" button always visible
-
-### Result: High Task Completion
-
-**User Research** (imagined, based on UX best practices):
-- 95% of users who upload successfully complete setup
-- Average setup time: 90 seconds (fast!)
-- Error rate: <5% (AI accuracy high, easy to correct)
-- Satisfaction: 4.7/5 (intuitive, smooth, effective)
+**Transition Duration**:
+- Fast: 0.15s (hover effects)
+- Normal: 0.3s (page transitions)
+- Slow: 0.5s (complex animations)
 
 ---
 
-## 🎨 Visual Summary
+## 📱 Responsive Behavior
 
-**Setup Page = Two Acts**:
+### Mobile Optimizations (414px)
 
-**Act 1 (ScanPortal)**:
-- Clean upload card
-- Progress bar during scan
-- Trust badges for reassurance
+**Layout Changes**:
+- DataHub: Tabs instead of side-by-side
+- Buttons: Full width (not side-by-side)
+- Cards: More padding, larger tap targets
+- Text: Scales down slightly (but still readable)
 
-**Act 2 (DataHub)**:
-- Bill info card (glass effect, gradient)
-- Items list (staggered cards with emoji categories)
-- Participants section (colored avatars)
-- Continue button (sticky, pulse animation)
+**Touch Interactions**:
+- File upload: Click only (no drag-and-drop)
+- Swipe to delete: Possible future enhancement
+- Haptic feedback: Vibration on button taps
 
-**Overall Feel**: Like using a premium banking app - smooth, intelligent, trustworthy.
+### Tablet (768px)
+
+**Layout Changes**:
+- DataHub: Side-by-side at this breakpoint
+- Search bars: Full width in their columns
+- Typography: Slightly larger than mobile
+
+### Desktop (1366px+)
+
+**Layout Changes**:
+- Maximum content width: 1280px (centered)
+- Even more generous spacing
+- Hover effects more visible
+
+### Foldable Phones (280px)
+
+**Special Handling**:
+- Custom breakpoint: `fold-v`
+- Reduced padding to prevent overflow
+- Smaller font sizes
+- Still fully functional
 
 ---
 
-**Next**: Part 4 covers Assignment Page - where users assign items to people with visual, tactile interactions.
+## 🚦 Error States & Edge Cases
+
+### No Items Found
+
+**Scenario**: AI scanning completes but found 0 items
+
+**What Happens**:
+- Toast error: "No items detected. Please try again or enter manually."
+- Returns to STATE 1 (ScanPortal)
+- User can re-upload or switch to manual entry
+
+### API Error
+
+**Scenario**: Gemini API fails or times out
+
+**What Happens**:
+- Toast error: "Scanning failed. Check internet connection."
+- Returns to STATE 1
+- Files remain selected (user can retry)
+
+### Invalid Receipt Format
+
+**Scenario**: Image is not a receipt (e.g., selfie, landscape photo)
+
+**What Happens**:
+- AI returns empty or invalid data
+- Toast warning: "This doesn't look like a receipt. Try another image."
+- User can add items manually in DataHub
+
+### Demo Data Already Loaded
+
+**Scenario**: User clicks "Try Demo" but demo is already active
+
+**What Happens**:
+- Confirmation dialog: "Replace current data with demo?"
+- User can confirm or cancel
+- Prevents accidental data loss
+
+---
+
+## 🎯 User Journey Success Metrics
+
+### Ideal Path (Happy Flow)
+
+1. Click "Get Started" from landing (0s)
+2. Drag-drop receipt image (5s)
+3. Click "Start Scanning" (7s)
+4. AI processes receipt (10s total)
+5. Review items in DataHub (20s)
+6. Add 2-3 participants (40s)
+7. Click "Assign Items →" (42s)
+
+**Total Time**: ~40-60 seconds from landing to assignment
+
+### Conversion Points
+
+**Critical Actions**:
+- Upload at least 1 file (STATE 1 → STATE 2)
+- Wait for scanning completion (STATE 2 → STATE 3)
+- Add at least 2 participants (STATE 3 → Assignment)
+
+**Drop-off Risks**:
+- Scanning too slow (>10s) - user abandons
+- Too many items to review (>30) - overwhelming
+- No participant email option - confusion
+
+---
+
+## 🔑 Key Takeaways
+
+### What Makes This Flow Special
+
+1. **3-state machine** - Clear, focused progression (ScanPortal → Scanning → DataHub)
+2. **Lottie animation** - Engaging visual during AI processing
+3. **Glass morphism** - Premium card designs throughout
+4. **Returning user detection** - Banner offers to continue or restart
+5. **Alternative entry modes** - Upload OR manual OR demo
+6. **Responsive layout** - Tabs on mobile, side-by-side on desktop
+7. **Real-time validation** - Button disables if data incomplete
+8. **Spring animations** - Everything feels smooth and alive
+
+### Implementation Status
+
+- ✅ **ScanPortal**: Fully functional (183 lines, refactored Nov 4)
+- ✅ **AIScanAnimation**: Lottie animation implemented
+- ✅ **DataHub**: Premium upgrade complete (glass morphism, Nov 5)
+- ✅ **File upload**: Drag-drop + click, preview, validation
+- ✅ **Demo data**: One-click sample bill loading
+- 🚧 **Manual entry parsing**: Toggle exists, parsing incomplete
+- ✅ **Returning user**: Banner with continue/clear options
+
+### Technical Highlights
+
+- **Lazy loading**: AI scanning logic only loads when needed (~27 kB chunk)
+- **Image compression**: Large photos compressed before API upload
+- **XSS prevention**: All AI results sanitized before storage
+- **State persistence**: Zustand + localStorage preserves progress
+- **Error recovery**: Graceful failures return to upload state

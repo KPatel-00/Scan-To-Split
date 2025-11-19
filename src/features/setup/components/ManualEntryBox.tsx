@@ -71,7 +71,7 @@ export function ManualEntryBox({ value, onChange, onParse }: ManualEntryBoxProps
         <Textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Paste your receipt here...\n\nVitaminwasser 500ml 3.45\nMilk 1L x2 1.20\nBread 0.89\nCoupon -2.00"
+          placeholder="Paste your receipt text here..."
           className="h-[160px] font-mono text-sm resize-none bg-background/50"
         />
 
